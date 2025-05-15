@@ -1,10 +1,19 @@
 import mongoose from "mongoose";
+
 const connection = async () => {
+  console.log(process.env.MONGO_URI);
   try {
+    if (!process.env.MONGO_URI) {
+      throw new Error("MONGO_URI is not defined in environment variables");
+    }
+
     await mongoose.connect(process.env.MONGO_URI);
+
+    console.log("Database connection successful");
   } catch (error) {
-    error.message = "database connection is failed";
-    console.log(error.message);
+    console.error("Database connection failed:", error.message);
+    process.exit(1); // Exit the process if the database connection fails
   }
 };
+
 export default connection;
