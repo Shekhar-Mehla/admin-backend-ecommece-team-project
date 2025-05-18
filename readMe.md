@@ -114,5 +114,3 @@ src/
 ---
 
 ## License
-
-MIT
