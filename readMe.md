@@ -26,7 +26,7 @@ This is the backend service for the ecommerce admin panel. It is built with Node
    ```sh
    npm init -y
    yarn
-   yarn add mongodb express cors bcrypt jsonwebtoken 
+   yarn add mongodb express cors bcrypt jsonwebtoken
    ```
 
 3. **Set up environment variables:**
@@ -55,7 +55,7 @@ This is the backend service for the ecommerce admin panel. It is built with Node
 Before running the project, make sure to install all dependencies listed in `package.json`:
 
 ```sh
-yarn 
+yarn
 ```
 
 To check for outdated dependencies, run:
@@ -114,5 +114,3 @@ src/
 ---
 
 ## License
-
-MIT
