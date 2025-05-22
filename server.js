@@ -1,5 +1,8 @@
 import express from "express";
 import connection from "./src/config/dbConfig.js";
+import path from "path";
+import cors from "cors";
+import { userRouter } from "./src/routes/userRoute.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -16,4 +19,13 @@ connection()
     });
   })
   .catch((error) => console.log(error));
+
+const __dirname = path.resolve();
+
+// middlewares
+app.use(cors());
+app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
+app.use("/api/v1/user", userRouter);
