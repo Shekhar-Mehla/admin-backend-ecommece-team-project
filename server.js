@@ -4,6 +4,7 @@ import path from "path";
 import cors from "cors";
 import { userRouter } from "./src/routes/userRoute.js";
 import { imageRouter } from "./src/routes/imageRoute.js";
+import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -33,3 +34,11 @@ app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
 app.use("/api/vi/image", imageRouter);
 
 app.use("/api/v1/user", userRouter);
+
+// global error handler make sure to keep this middleware at the very bottom
+app.use((req, res, next) => {
+  const error = new Error(`Not found ${req.originalUrl}`);
+  error.statusCode = 404;
+  next(error);
+});
+app.use(errorMiddleware);
