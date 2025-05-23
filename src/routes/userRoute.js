@@ -5,4 +5,4 @@ import { upload } from "../middlewares/mutler/multer.js";
 export const userRouter = express.Router();
 
 // register new user route
-userRouter.post("/register", upload.single("img"), registerNewUser);
+userRouter.post("/register",  registerNewUser);

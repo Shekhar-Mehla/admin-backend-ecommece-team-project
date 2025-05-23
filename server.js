@@ -3,6 +3,7 @@ import connection from "./src/config/dbConfig.js";
 import path from "path";
 import cors from "cors";
 import { userRouter } from "./src/routes/userRoute.js";
+import { imageRouter } from "./src/routes/imageRoute.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -28,4 +29,7 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
+// image upload api for cloudnary
+app.use("/api/vi/image", imageRouter);
+
 app.use("/api/v1/user", userRouter);
