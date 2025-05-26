@@ -2,9 +2,10 @@ import express from "express";
 import connection from "./src/config/dbConfig.js";
 import path from "path";
 import cors from "cors";
-import { userRouter } from "./src/routes/userRoute.js";
+
 import { imageRouter } from "./src/routes/imageRoute.js";
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
+import { authRouter } from "./src/routes/authRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -33,12 +34,15 @@ app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
 // image upload api for cloudnary
 app.use("/api/vi/image", imageRouter);
 
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1/auth", authRouter);
 
-// global error handler make sure to keep this middleware at the very bottom
+// global error handler make sure to keep these middleware at the very bottom
+
+// page not found error
 app.use((req, res, next) => {
   const error = new Error(`Not found ${req.originalUrl}`);
   error.statusCode = 404;
   next(error);
 });
+// global error hadler middleware
 app.use(errorMiddleware);

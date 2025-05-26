@@ -1,11 +1,11 @@
-import mongoose from ('mongoose');
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
     status: {
       type: String,
-      enum: ['active', 'inactive'],
-      default: 'inactive',
+      enum: ["active", "inactive"],
+      default: "inactive",
     },
     fName: {
       type: String,
@@ -39,8 +39,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['admin', 'user'],
-      default: 'user',
+      enum: ["admin", "user"],
+      default: "user",
     },
     refreshJWT: {
       type: String,
@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema(
     },
     authProvider: {
       type: String, // e.g., 'google', 'facebook', 'local'
-      default: 'local',
+      default: "local",
     },
     providerId: {
       type: String, // for OAuth
@@ -65,5 +65,5 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const userCollection = mongoose.model('User', userSchema);
-export default userCollection
+const userCollection = mongoose.model("User", userSchema);
+export default userCollection;
