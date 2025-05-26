@@ -1,3 +1,5 @@
+import responseClient from "../utility/responseClient.js";
+
 const errorMiddleware = (error, req, res, next) => {
   const statusCode = error.statusCode || 500;
   let message;
@@ -9,10 +11,7 @@ const errorMiddleware = (error, req, res, next) => {
     }
   }
 
-  res.status(statusCode).json({
-    message: message,
-    statusCode: statusCode,
-  });
+  responseClient({ req, res, statusCode, message });
 };
 
 export default errorMiddleware;
