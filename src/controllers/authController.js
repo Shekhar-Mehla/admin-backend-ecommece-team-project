@@ -46,14 +46,14 @@ export const registerNewUser = async (req, res, next) => {
           }
         }
         return responseClient({
-        req,
-        res,
-        message:
-          "could not create the user. something went wrong try again later",
-        statusCode: 500,
-      }); 
+          req,
+          res,
+          message:
+            "could not create the user. something went wrong try again later",
+          statusCode: 500,
+        });
       }
-    return  responseClient({
+      return responseClient({
         req,
         res,
         message:
