@@ -6,6 +6,7 @@ import cors from "cors";
 import { imageRouter } from "./src/routes/imageRoute.js";
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 import { authRouter } from "./src/routes/authRoutes.js";
+import cloudnaryConfig from "./src/config/cloudnaryConfig.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -24,6 +25,8 @@ connection()
   .catch((error) => console.log(error));
 
 const __dirname = path.resolve();
+// cloudnary config
+cloudnaryConfig();
 
 // middlewares
 app.use(cors());
@@ -40,7 +43,7 @@ app.use("/api/v1/auth", authRouter);
 
 // page not found error
 app.use((req, res, next) => {
-  const error = new Error(`Not found ${req.originalUrl}`);
+  const error = new Error(`Not found  ${req.originalUrl}`);
   error.statusCode = 404;
   next(error);
 });
