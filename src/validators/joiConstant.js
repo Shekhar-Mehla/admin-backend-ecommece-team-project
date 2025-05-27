@@ -21,4 +21,8 @@ export const CONFIRMPASSWORD = Joi.ref("PASSWORDREQ");
 export const THUMBNAIL = Joi.string().uri({ scheme: ["https"] });
 
 export const STATUS = Joi.string().valid("active", "inActive");
-export const STATUSREW = STATUS.required();
+export const STATUSREq = STATUS.required();
+export const ID = Joi.string().alphanum().min(20).max(30);
+export const IDREQ = ID.required();
+export const TOKEN = Joi.string().min(10).max(50);
+export const TOKENREQ = TOKEN.required();

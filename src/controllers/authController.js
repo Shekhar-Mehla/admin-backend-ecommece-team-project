@@ -1,8 +1,14 @@
-import { createNewSession } from "../models/Session/sessionModel.js";
-import { addNewUser } from "../models/User/userModel.js";
-import { accountActivationLinkEmail } from "../services/email/emailService.js";
+import {
+  createNewSession,
+  deleteSession,
+} from "../models/Session/sessionModel.js";
+import { addNewUser, updateUser } from "../models/User/userModel.js";
+import {
+  accountActivatedNotificationEmail,
+  accountActivationLinkEmail,
+} from "../services/email/emailService.js";
 import { hashPassword } from "../utility/bcrypt.js";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, validate } from "uuid";
 import responseClient from "../utility/responseClient.js";
 
 // register new user
@@ -70,3 +76,65 @@ export const registerNewUser = async (req, res, next) => {
     next(error);
   }
 };
+
+// varify user controller start here
+
+export const verifyUser = async (req, res, next) => {
+  try {
+    const { _id, token } = req.body;
+    if (_id && token) {
+      // validate token if it is valid uuid token using uuid validate
+      const validToken = validate(token);
+      if (validToken) {
+        // make the delete querry to the session using both _id and token
+        const deletedSession = await deleteSession({ _id, token });
+        if (deletedSession?._id) {
+          // update the user status to active using email from deletedsession
+          const fliter = {
+            email: deletedSession.association,
+          };
+          const update = {
+            status: "active",
+          };
+          const updatedUser = await updateUser(fliter, update);
+          if (updatedUser?._id) {
+            // send email notification to the client about account activation.
+            const name = updatedUser.fName;
+            const email = updatedUser.email;
+            const url = "http://localhost:5173/login";
+
+            const mail = await accountActivatedNotificationEmail({
+              name,
+              email,
+              url,
+            });
+            console.log(mail, ".........");
+            if (mail?.messageId) {
+              return responseClient({
+                req,
+                res,
+                message: "Account has been activated and user also notified",
+              });
+            }
+          }
+        }
+      }
+      return responseClient({
+        req,
+        res,
+        statusCode: "token is invalid",
+        statusCode: 400,
+      });
+    }
+    return responseClient({
+      req,
+      res,
+      statusCode: 400,
+      message: "you must submit _id and token",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// varify user controller end her
