@@ -1,9 +1,17 @@
 import express from "express";
 import connection from "./src/config/dbConfig.js";
+import cors from "cors";
+import productRoute from "./src/Routes/productRoutes.js";
+import morgan from "morgan";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+//middlewares
+app.use(cors());
+app.use(express.json());
+app.use(morgan("dev"));
+app.use("/api/v1/product", productRoute);
 // db connecttion
 connection()
   .then(() => {
