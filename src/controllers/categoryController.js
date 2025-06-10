@@ -2,7 +2,7 @@ import slugify from "slugify";
 
 import {
   addNewCategiry,
-  getCategoryByParent,
+  getCategoryById,
 } from "../models/Category/categoryModel.js";
 import responseClient from "../utility/responseClient.js";
 export const createNewCategory = async (req, res, next) => {
@@ -29,7 +29,7 @@ export const createNewCategory = async (req, res, next) => {
     let parentCategory = null;
 
     if (parent) {
-      parentCategory = await getCategoryByParent(parent);
+      parentCategory = await getCategoryById(parent);
 
       // ⚠️ If parent is provided but not found, throw error
       if (!parentCategory) {
