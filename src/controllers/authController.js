@@ -85,41 +85,51 @@ export const loginUser = async (req, res) => {
   try {
     //destructure email and password from req.body
     const { email, password } = req.body;
+    console.log(req.body);
 
     // check if user exist
     const user = await findUserByEmail(email);
 
     // if user not found
-    if (!user || !user._id) {
+    if (!user?._id) {
       return responseClient({
         res,
         message: "User not found. Please register to login!",
         statusCode: 404,
       });
     }
+    if (user?._id && user.status === "active") {
+      const isMatch = comparePassword(password, user.password);
 
-    // Compare password
-    const isMatch = comparePassword(password, user.password);
+      // if password match then generate token
+      if (isMatch) {
+        const jwt = await generateJWTs(user.email);
+        console.log(jwt);
+        return responseClient({
+          res,
+          message: "User logged in successfully!!",
+          payload: jwt,
+        });
 
-    // if password match then generate token
-    if (isMatch) {
-      const jwt = await generateJWTs(user.email);
+      }
+      
+      // if password not match
       return responseClient({
         res,
-        message: "User logged in successfully!!",
-        payload: jwt,
-      });
+        message: "your password is worng ",
+        statusCode: 404,
+      })
     }
-
-    // if password not match
-    return responseClient({
-      res,
-      message: "Invalid credentials",
-      statusCode: 401,
-    });
+return responseClient({
+        res,
+        message: "your account is not active ",
+        statusCode: 404,
+      });
+    // Compare password
   } catch (error) {
     console.log("Login error:", error);
     return responseClient({
+      req,
       res,
       message: "Something went wrong",
       statusCode: 500,

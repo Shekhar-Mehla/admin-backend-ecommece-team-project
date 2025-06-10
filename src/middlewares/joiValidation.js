@@ -11,7 +11,7 @@ const joiValidation = ({ req, res, next, obj }) => {
     if (!error) {
       return next();
     }
-    responseClient({ req, res, message: error.message, statusCode: 400 });
+    responseClient({ res, message: error.message, statusCode: 400 });
   } catch (error) {
     next(error);
   }

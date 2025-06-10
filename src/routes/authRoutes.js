@@ -10,7 +10,7 @@ import {
 import {
   registerUserValidtion,
   loginValidation,
-} from "../validators/schemas/registerUserValidtion.js";
+} from "../validators/schemas/validationSchema.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 export const authRouter = express.Router();
