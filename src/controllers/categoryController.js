@@ -1,26 +1,63 @@
-// controllers/categoryController.js
 import Category from "../models/Category/categoryModel.js";
+// controllers/categoryController.js
 
-// Create a new category
-export const addCategory = async (req, res) => {
+export const createCategory = async (req, res) => {
   try {
-    const { name, slug, isFeatured } = req.body;
+    const { name, slug, parent } = req.body;
 
-    const newCategory = new Category({ name, slug, isFeatured });
+    // Default for root categories
+    let level = 1;
+    let path = `/${slug}`;
+
+    if (parent) {
+      const parentCategory = await Category.findById(parent);
+      console.log("Parent category found:", parentCategory);
+      if (!parentCategory) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid parent category",
+        });
+      }
+
+      if (typeof parentCategory.level !== "number") {
+        return res.status(400).json({
+          success: false,
+          message: "Parent category's level is invalid",
+        });
+      }
+
+      level = parentCategory.level + 1;
+      path = `${parentCategory.path}/${slug}`;
+    }
+
+    const newCategory = new Category({
+      name,
+      slug,
+      parent: parent || null,
+      path,
+      level,
+    });
+
     await newCategory.save();
 
-    res
-      .status(201)
-      .json({ message: "Category created", category: newCategory });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to create category", error: err.message });
+    res.status(201).json({ success: true, data: newCategory });
+  } catch (error) {
+    console.error("Category Creation Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create category",
+    });
   }
 };
 
-// Get all categories
-export const getCategories = async (req, res) => {
-  const categories = await Category.find();
-  res.json(categories);
+//this is for getting all categories
+export const getAllCategories = async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.status(200).json(categories);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch categories" });
+  }
 };

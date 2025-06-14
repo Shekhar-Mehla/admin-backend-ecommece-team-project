@@ -2,45 +2,34 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
+    title: { type: String, required: true }, // Product title
     description: String,
-    price: {
-      type: Number,
-      required: true,
-    },
-    salePrice: Number,
-    isOnSale: {
-      type: Boolean,
-      default: false,
-    },
-    images: [String],
-    category: {
+    slug: { type: String, required: true, index: true }, // Description text
+    price: Number, // Normal price
+    discountPrice: Number, // Discounted price if any
+    images: [String], // Array of image URLs
+    thumbnail: String, // Main thumbnail image
+    categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
-    },
-    subcategory: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Subcategory",
-      required: true,
-    },
-    sizes: [
-      {
-        size: {
-          type: String, // or Number, depending on your convention
-        },
-        stock: {
-          type: Number,
-          default: 0,
-        },
-      },
-    ],
-    tags: [String],
+    }, // Linked category (deepest subcategory)
+    categoryPath: { type: String, required: true, index: true }, // Category materialized path, e.g. "/men/shoes/sneakers"
+    stock: Number, // Stock count
+    sizes: [String], // Available sizes
+    colors: [String], // Available colors
+    brand: String, // Brand name
+    status: {
+      type: String,
+      enum: ["active", "inactive", "out-of-stock"],
+      default: "active",
+    }, // Availability status
+    tags: [String], // Search tags
+    ratings: Number, // Average rating
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }], // References to reviews
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Product", productSchema);
+const productCollection = mongoose.model("Product", productSchema);
+export default productCollection;
