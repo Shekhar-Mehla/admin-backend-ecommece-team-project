@@ -2,22 +2,21 @@ import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    isFeatured: {
-      type: Boolean,
-      default: false,
-    },
+    name: { type: String, required: true }, // Category name
+    slug: { type: String, unique: true, index: true }, // URL-friendly unique string
+    parent: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      default: null,
+    }, // Parent category reference
+    path: { type: String, required: true, unique: true, index: true }, // Materialized path e.g. "/men/shoes"
+    level: { type: Number, required: true }, // Depth level in tree, root=1
+    description: { type: String }, // Optional description
+    icon: { type: String }, // Optional icon url or class
+    isFeatured: { type: Boolean, default: false }, // Flag to highlight featured categories
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Category", categorySchema);
+const categoryCollection = mongoose.model("Category", categorySchema);
+export default categoryCollection;

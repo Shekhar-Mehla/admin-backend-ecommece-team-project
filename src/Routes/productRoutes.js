@@ -1,18 +1,13 @@
 import express from "express";
 import { addProductController } from "../controllers/productController.js";
 import {
-  addCategory,
-  getCategories,
+  createCategory,
+  getAllCategories,
 } from "../controllers/categoryController.js";
-import {
-  addSubcategory,
-  getSubcategoriesByCategory,
-} from "../controllers/subCategories.js";
 
 const router = express.Router();
 router.post("/addProduct", addProductController);
-router.post("/addCategory", addCategory);
-router.get("/getCategories", getCategories);
-router.post("/addSubCategory", addSubcategory);
-router.get("/getSubCategories/:categoryId", getSubcategoriesByCategory);
+router.post("/addCategory", createCategory);
+router.post("/getCategories", getAllCategories);
+
 export default router;

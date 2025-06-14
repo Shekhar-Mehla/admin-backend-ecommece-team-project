@@ -1,3 +1,4 @@
+import Category from "../models/Category/categoryModel.js";
 import Product from "../models/Product/productModel.js";
 
 export const addProductController = async (req, res) => {
@@ -6,29 +7,43 @@ export const addProductController = async (req, res) => {
       title,
       description,
       price,
-      salePrice,
-      isOnSale,
-      category,
-      subcategory,
+      discountPrice,
+      images,
+      thumbnail,
+      categoryId,
+      stock,
       sizes,
+      colors,
+      brand,
+      status,
       tags,
     } = req.body;
 
-    const product = new Product({
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(400).json({ message: "Invalid category ID" });
+    }
+
+    const slug = title.toLowerCase().replace(/ /g, "-");
+    const product = await Product.create({
       title,
       description,
+      slug,
       price,
-      salePrice,
-      isOnSale,
-      category,
-      subcategory,
+      discountPrice,
+      images,
+      thumbnail,
+      categoryId,
+      categoryPath: category.path,
+      stock,
       sizes,
+      colors,
+      brand,
+      status,
       tags,
-      images: [],
     });
 
-    await product.save();
-    res.status(201).json({ message: "Product added", product });
+    res.status(201).json(product);
   } catch (err) {
     res
       .status(500)
