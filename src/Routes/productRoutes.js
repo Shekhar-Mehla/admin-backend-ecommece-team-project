@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 router.post("/addProduct", addProductController);
-router.post("/addCategory", createCategory);
-router.post("/getCategories", getAllCategories);
+router.post("/category/add", createCategory);
+router.get("/category/tree", getAllCategories);
 
 export default router;
