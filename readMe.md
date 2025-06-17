@@ -17,7 +17,7 @@ This is the backend service for the ecommerce admin panel. It is built with Node
 1. **Clone the repository:**
 
    ```sh
-   git clone https://github.com/your-username/backend-admin.git
+   git clone 
    cd backend-admin
    ```
 
