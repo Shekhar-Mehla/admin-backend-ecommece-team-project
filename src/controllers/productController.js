@@ -77,6 +77,7 @@ export const createNewProduct = async (req, res, next) => {
 export const getproducta = async (req, res, next) => {
   try {
     const { slug } = req.params;
+    
 
     if (!slug) {
       return responseClient({
