@@ -1,5 +1,10 @@
 import express from "express";
 import connection from "./src/config/dbConfig.js";
+
+
+import productRoute from "./src/Routes/productRoutes.js";
+import morgan from "morgan";
+
 import path from "path";
 import cors from "cors";
 import "dotenv/config";
@@ -7,10 +12,19 @@ import { imageRouter } from "./src/routes/imageRoute.js";
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 import { authRouter } from "./src/routes/authRoutes.js";
 
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+//middlewares
+app.use(cors());
+app.use(express.json());
+app.use(morgan("dev"));
+app.use("/api/v1/product", productRoute);
+
+
 // connect MongoDB
+
 connection()
   .then(() => {
     /** ready to use. The `mongoose.connect()` promise resolves to mongoose
