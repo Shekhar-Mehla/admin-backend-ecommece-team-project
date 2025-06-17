@@ -1,4 +1,5 @@
 import Category from "../models/Category/categoryModel.js";
+import buildCategoryTree from "../utils/buildCategoryTree.js";
 // controllers/categoryController.js
 
 export const createCategory = async (req, res) => {
@@ -11,7 +12,7 @@ export const createCategory = async (req, res) => {
 
     if (parent) {
       const parentCategory = await Category.findById(parent);
-      console.log("Parent category found:", parentCategory);
+
       if (!parentCategory) {
         return res.status(400).json({
           success: false,
@@ -53,9 +54,11 @@ export const createCategory = async (req, res) => {
 //this is for getting all categories
 export const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
-    res.status(200).json(categories);
+    const categories = await Category.find().lean();
+    const nestedCategories = buildCategoryTree(categories);
+    res.status(200).json({ success: true, data: nestedCategories });
   } catch (err) {
+    console.error("Error fetching categories:", err);
     res
       .status(500)
       .json({ success: false, message: "Failed to fetch categories" });
