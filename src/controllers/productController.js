@@ -1,52 +1,31 @@
-import Category from "../models/Category/categoryModel.js";
-import Product from "../models/Product/productModel.js";
-
-export const addProductController = async (req, res) => {
+import slugify from "slugify";
+import { addNewProduct } from "../models/Product/productModel.js";
+import responseClient from "../utility/responseClient.js";
+import { getCategoryById } from "../models/Category/categoryModel.js";
+export const addProductController = async (req, res, next) => {
   try {
-    const {
-      title,
-      description,
-      price,
-      discountPrice,
-      images,
-      thumbnail,
-      categoryId,
-      stock,
-      sizes,
-      colors,
-      brand,
-      status,
-      tags,
-    } = req.body;
-
-    const category = await Category.findById(categoryId);
-    if (!category) {
-      return res.status(400).json({ message: "Invalid category ID" });
+    const slug = slugify(req.body.title, { lower: true });
+    const category = await getCategoryById(req.body.categoryId);
+    if (!category?._id) {
+      throw new Error("could not find category");
     }
-
-    const slug = title.toLowerCase().replace(/ /g, "-");
-    const product = await Product.create({
-      title,
-      description,
+    const productPath = `${category?.path}/${slug}`;
+    const obj = {
+      ...req.body,
       slug,
-      price,
-      discountPrice,
-      images,
-      thumbnail,
-      categoryId,
-      categoryPath: category.path,
-      stock,
-      sizes,
-      colors,
-      brand,
-      status,
-      tags,
-    });
+      productPath,
+    };
 
-    res.status(201).json(product);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error adding product", error: err.message });
+    const product = await addNewProduct(obj);
+    product?._id
+      ? responseClient({ res, message: "Product added succesfully👌" })
+      : responseClient({
+          res,
+          message:
+            "something went wrong,Product cound not added please try again!😒",
+          statusCode: 401,
+        });
+  } catch (error) {
+    next(error);
   }
 };

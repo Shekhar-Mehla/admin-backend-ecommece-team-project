@@ -1,66 +1,60 @@
-import Category from "../models/Category/categoryModel.js";
+import slugify from "slugify";
+import { getAllCategory } from "../models/Category/categoryModel.js";
+import { addNewCategory } from "../models/Category/categoryModel.js";
+import { getCategoryPath } from "../utility/categoryPath.js";
+import responseClient from "../utility/responseClient.js";
 import buildCategoryTree from "../utils/buildCategoryTree.js";
 // controllers/categoryController.js
 
-export const createCategory = async (req, res) => {
+export const createNewCategory = async (req, res, next) => {
   try {
-    const { name, slug, parent } = req.body;
+    const category = req.body;
 
-    // Default for root categories
-    let level = 1;
-    let path = `/${slug}`;
-
-    if (parent) {
-      const parentCategory = await Category.findById(parent);
-
-      if (!parentCategory) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid parent category",
-        });
-      }
-
-      if (typeof parentCategory.level !== "number") {
-        return res.status(400).json({
-          success: false,
-          message: "Parent category's level is invalid",
-        });
-      }
-
-      level = parentCategory.level + 1;
-      path = `${parentCategory.path}/${slug}`;
-    }
-
-    const newCategory = new Category({
-      name,
-      slug,
-      parent: parent || null,
+    const { path, level } = await getCategoryPath({
+      name: category.name,
+      parentId: category.parent === "" ? null : category.parent,
+    });
+    const obj = {
+      ...category,
+      slug: slugify(category.name, { lower: true }),
       path,
       level,
-    });
-
-    await newCategory.save();
-
-    res.status(201).json({ success: true, data: newCategory });
+    };
+    const cat = await addNewCategory(obj);
+    cat?._id
+      ? responseClient({ res, message: "New Category Added Sucessfully" })
+      : responseClient({
+          res,
+          message: "unable to add New Category",
+          statusCode: 401,
+        });
   } catch (error) {
-    console.error("Category Creation Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to create category",
-    });
+    if (error.message.includes("E11000 duplicate key error collection")) {
+      error.message = "this category is already available.Try next 😊";
+    }
+    next(error);
   }
 };
 
 //this is for getting all categories
-export const getAllCategories = async (req, res) => {
+export const getAllCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find().lean();
-    const nestedCategories = buildCategoryTree(categories);
-    res.status(200).json({ success: true, data: nestedCategories });
-  } catch (err) {
-    console.error("Error fetching categories:", err);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch categories" });
+    const categories = await getAllCategory().lean();
+    if (categories.length && Array.isArray(categories)) {
+      const nestedCategories = buildCategoryTree(categories);
+      return responseClient({
+        res,
+        message: "here is the list of all categories",
+        payload: nestedCategories,
+      });
+    } else {
+      responseClient({
+        res,
+        statusCode: 400,
+        message: "something went wrong could not create categpry",
+      });
+    }
+  } catch (error) {
+    next(error);
   }
 };
