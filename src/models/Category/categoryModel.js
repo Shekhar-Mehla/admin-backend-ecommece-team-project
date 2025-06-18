@@ -1,22 +1,14 @@
-import mongoose from "mongoose";
+import categoryCollection from "./categorySchema.js";
+// add new category
+export const addNewCategory = async (obj) => {
+  const category = await categoryCollection(obj).save();
+  return category;
+};
 
-const categorySchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true }, // Category name
-    slug: { type: String, unique: true, index: true }, // URL-friendly unique string
-    parent: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      default: null,
-    }, // Parent category reference
-    path: { type: String, required: true, unique: true, index: true }, // Materialized path e.g. "/men/shoes"
-    level: { type: Number, required: true }, // Depth level in tree, root=1
-    description: { type: String }, // Optional description
-    icon: { type: String }, // Optional icon url or class
-    isFeatured: { type: Boolean, default: false }, // Flag to highlight featured categories
-  },
-  { timestamps: true }
-);
+export const getCategoryById = async (_id) => {
+  return await categoryCollection.findById({ _id });
+};
 
-const categoryCollection = mongoose.model("Category", categorySchema);
-export default categoryCollection;
+export const getAllCategory = async () => {
+  return await categoryCollection.find({});
+};

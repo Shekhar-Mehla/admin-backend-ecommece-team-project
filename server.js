@@ -1,8 +1,6 @@
 import express from "express";
 import connection from "./src/config/dbConfig.js";
 
-
-import productRoute from "./src/Routes/productRoutes.js";
 import morgan from "morgan";
 
 import path from "path";
@@ -11,7 +9,8 @@ import "dotenv/config";
 import { imageRouter } from "./src/routes/imageRoute.js";
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 import { authRouter } from "./src/routes/authRoutes.js";
-
+import productRouter from "./src/routes/productRoutes.js";
+import categoryRouter from "./src/routes/categoryRoute.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -20,8 +19,6 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use("/api/v1/product", productRoute);
-
 
 // connect MongoDB
 
@@ -51,6 +48,8 @@ app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
 //Routers
 app.use("/api/vi/image", imageRouter); // image upload api for cloudnary
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/product", productRouter);
+app.use("/api/v1/category", categoryRouter);
 
 // global error handler make sure to keep these middleware at the very bottom
 

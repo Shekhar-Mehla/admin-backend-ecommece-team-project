@@ -7,6 +7,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // check if directory is already availble if not create one
     const imageFolder = path.join(path.resolve(), "public", "images");
+    console.log(imageFolder)
     if (!fs.existsSync(imageFolder)) {
       fs.mkdirSync(imageFolder, { recursive: true });
     }

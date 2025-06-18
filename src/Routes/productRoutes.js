@@ -1,13 +1,7 @@
 import express from "express";
 import { addProductController } from "../controllers/productController.js";
-import {
-  createCategory,
-  getAllCategories,
-} from "../controllers/categoryController.js";
+const productRouter = express.Router();
 
-const router = express.Router();
-router.post("/addProduct", addProductController);
-router.post("/category/add", createCategory);
-router.get("/category/tree", getAllCategories);
+productRouter.post("/addProduct", addProductController);
 
-export default router;
+export default productRouter;
