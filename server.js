@@ -11,6 +11,7 @@ import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 import { authRouter } from "./src/routes/authRoutes.js";
 import productRouter from "./src/routes/productRoutes.js";
 import categoryRouter from "./src/routes/categoryRoute.js";
+import cloudnaryConfig from "./src/config/cloudnaryConfig.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -19,6 +20,8 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+// cloudnary cinfiguration
+cloudnaryConfig();
 
 // connect MongoDB
 

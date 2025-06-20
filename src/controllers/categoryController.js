@@ -9,6 +9,7 @@ import buildCategoryTree from "../utils/buildCategoryTree.js";
 export const createNewCategory = async (req, res, next) => {
   try {
     const category = req.body;
+    
 
     const { path, level } = await getCategoryPath({
       name: category.name,
