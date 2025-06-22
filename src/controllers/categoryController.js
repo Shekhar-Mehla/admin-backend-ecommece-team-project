@@ -40,6 +40,7 @@ export const createNewCategory = async (req, res, next) => {
 //this is for getting all categories
 export const getAllCategories = async (req, res, next) => {
   try {
+<<<<<<< Updated upstream
     const categories = await getAllCategory().lean();
     if (categories.length && Array.isArray(categories)) {
       const nestedCategories = buildCategoryTree(categories);
@@ -57,5 +58,16 @@ export const getAllCategories = async (req, res, next) => {
     }
   } catch (error) {
     next(error);
+=======
+    const categories = await Category.find().lean();
+
+    const nestedCategories = buildCategoryTree(categories);
+    res.status(200).json({ success: true, data: nestedCategories });
+  } catch (err) {
+    console.error("Error fetching categories:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch categories" });
+>>>>>>> Stashed changes
   }
 };
