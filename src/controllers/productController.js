@@ -17,14 +17,24 @@ export const addProductController = async (req, res, next) => {
     if (!category?._id) {
       throw new Error("could not find category");
     }
+<<<<<<< Updated upstream
     const productPath = `${category?.path}/${slug}`;
     const obj = {
       ...req.body,
       thumbnail: req.body.images[0],
+=======
+
+    const slug = title.toLowerCase().replace(/ /g, "-");
+
+    const product = await Product.create({
+      title,
+      description,
+>>>>>>> Stashed changes
       slug,
       productPath,
     };
 
+<<<<<<< Updated upstream
     const product = await addNewProduct(obj);
     product?._id
       ? responseClient({ res, message: "Product added succesfully👌" })
@@ -145,5 +155,12 @@ export const deleteProductsController = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+=======
+    res.status(201).json(product, { message: "Product added successfully" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error adding product", error: err.message });
+>>>>>>> Stashed changes
   }
 };
