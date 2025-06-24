@@ -3,6 +3,9 @@ import slugify from "slugify";
 import {
   addNewCategory,
   getAllCategory,
+  getCategoryById,
+  updateCategory,
+  updateChildrenCategories,
 } from "../models/Category/categoryModel.js";
 import responseClient from "../utility/responseClient.js";
 import { getCategoryPath } from "../utility/categoryPath.js";
@@ -50,6 +53,51 @@ export const getALLCategoryController = async (req, res, next) => {
           statusCode: 400,
           message: "something went wrong unable to get data",
         });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateCategoryController = async (req, res, next) => {
+  try {
+    // step 1 get data from req.body
+    const { _id, name } = req.body;
+
+    // step 2 fetch csategry by id from db
+    const category = await getCategoryById(_id);
+
+    if (category?._id) {
+      const { parent } = category;
+      const oldPath = category.path;
+
+      const newslug = slugify(name, { lower: true });
+      const { path } = await getCategoryPath({
+        name: name,
+        parentId: parent === "" ? null : parent,
+      });
+      // update category
+
+      const updateObj = { name: name, path: path, slug: newslug };
+      const updatedCategory = await updateCategory({ _id }, updateObj);
+      if (updatedCategory?._id) {
+        // fetch all its children with old path
+        // const allCategories = await getAllCategory();
+        // const children = allCategories.filter((cat) =>
+        //   cat.path.startsWith(oldPath + `/`)
+        // );
+const filter = {path:oldPath + "/"}
+
+const newpath = 
+
+const update = {$set:{path:}}
+
+
+       const updatedChildrens = updateChildrenCategories(filter,update)
+
+        //
+        // const allChildrens = await getAllCategory({})
+      }
+    }
   } catch (error) {
     next(error);
   }

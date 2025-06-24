@@ -15,3 +15,11 @@ export const getCategoryBySlug = async (slug) => {
 export const getAllCategory = async () => {
   return await categoryCollection.find({});
 };
+export const updateCategory = async (filter, update) => {
+  return await categoryCollection.findByIdAndUpdate(filter, update, {
+    new: true,
+  });
+};
+export const updateChildrenCategories = async (filter, update) => {
+  return await categoryCollection.updateMany(filter,update)
+};
