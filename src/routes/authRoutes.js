@@ -6,6 +6,8 @@ import {
   loginUser,
   logout,
   registerNewUser,
+  googleAuthController,
+  googleAuthCallBackController,
 } from "../controllers/authController.js";
 import {
   registerUserValidtion,
@@ -17,6 +19,8 @@ export const authRouter = express.Router();
 
 // register new user route
 authRouter.post("/register", registerUserValidtion, registerNewUser);
+authRouter.get("/google", googleAuthController);
+authRouter.get("/google/callback", googleAuthCallBackController);
 
 //login user
 authRouter.post("/login", loginValidation, loginUser);

@@ -40,6 +40,7 @@ export const addProductController = async (req, res, next) => {
 };
 // add prodcut controller end here
 
+// get product by id start here
 export const getProductsByCategoryIdController = async (req, res, next) => {
   try {
     const { categoryId } = req.params;
@@ -60,7 +61,9 @@ export const getProductsByCategoryIdController = async (req, res, next) => {
     next(error);
   }
 };
+// get product by id ends here
 
+// get product by Id start here
 export const getProductByIdController = async (req, res, next) => {
   try {
     const { _id } = req.params;
@@ -81,6 +84,9 @@ export const getProductByIdController = async (req, res, next) => {
     next(error);
   }
 };
+// get product by Id ends her
+
+// get all products start here
 export const getAllProductsController = async (req, res, next) => {
   try {
     // call model
@@ -102,6 +108,10 @@ export const getAllProductsController = async (req, res, next) => {
     next(error);
   }
 };
+// get all products ends here
+
+
+// update prodocts start here
 export const updateProductsController = async (req, res, next) => {
   try {
     const { _id } = req.params;
@@ -124,10 +134,12 @@ export const updateProductsController = async (req, res, next) => {
     next(error);
   }
 };
+//  update prodocts ends here
+
+// delete products start here
 export const deleteProductsController = async (req, res, next) => {
   try {
     // call model
-    
 
     const deletedProductByIds = await deleteProducts(req.body);
     console.log(deletedProductByIds);
@@ -147,3 +159,4 @@ export const deleteProductsController = async (req, res, next) => {
     next(error);
   }
 };
+// delete products start here

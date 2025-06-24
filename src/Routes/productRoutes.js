@@ -7,9 +7,10 @@ import {
   updateProductsController,
   deleteProductsController,
 } from "../controllers/productController.js";
+import addProductJoiValidator from "../validators/schemas/addProductJoiValidator.js";
 const productRouter = express.Router();
 
-productRouter.post("/addProduct", addProductController);
+productRouter.post("/addProduct",addProductJoiValidator, addProductController);
 productRouter.get("/:categoryId", getProductsByCategoryIdController);
 productRouter.get("/Id/:_id", getProductByIdController);
 productRouter.get("/", getAllProductsController);

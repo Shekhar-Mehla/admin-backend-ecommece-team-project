@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 //access jwt: session table | for session storage
 export const generateAccessJWT = async (email) => {
+  console.log(process.env.JWT_ACCESS_SECRET);
   const token = jwt.sign({ email }, process.env.JWT_ACCESS_SECRET, {
     expiresIn: "3h",
   });
