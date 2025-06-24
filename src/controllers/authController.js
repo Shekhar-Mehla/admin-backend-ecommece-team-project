@@ -5,6 +5,7 @@ import {
 import {
   addNewUser,
   findUserByEmail,
+  findUserByGoogleId,
   updateUser,
 } from "../models/User/userModel.js";
 import { accountActivationLinkEmail } from "../services/email/emailService.js";
@@ -13,7 +14,8 @@ import { v4 as uuidv4 } from "uuid";
 import responseClient from "../utility/responseClient.js";
 import { generateJWTs } from "../utility/jwthelper.js";
 import { sendResetPasswordLinkEmail } from "../utility/nodemailerHelper.js";
-
+import axios from "axios";
+import { Children } from "react";
 // register new user
 export const registerNewUser = async (req, res, next) => {
   try {
@@ -261,3 +263,69 @@ export const logout = async (req, res) => {
     responseClient({ res, message: error.message, statusCode: 500 });
   }
 };
+
+// google auth controller start here
+// create url for the google consent screen.
+
+export const googleAuthController = (req, res, next) => {
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=http://localhost:8000/api/v1/auth/google/callback&response_type=code&scope=openid%20profile%20email`;
+  res.redirect(url);
+};
+// google auth controller ends here
+// google callback auth controller start here
+
+export const googleAuthCallBackController = async (req, res, next) => {
+  try {
+    const { code } = req.query;
+    const { data } = await axios.post(`https://oauth2.googleapis.com/token`, {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: "http://localhost:8000/api/v1/auth/google/callback",
+      grant_type: "authorization_code",
+    });
+    const { id_token } = data;
+    const userInfo = JSON.parse(
+      Buffer.from(id_token.split(".")[1], "base64").toString()
+    );
+    console.log(userInfo);
+    const user = await findUserByGoogleId(userInfo.sub);
+
+    if (!user) {
+      const obj = {
+        providerId: userInfo.sub,
+        fName: userInfo.given_name,
+        lName: userInfo.family_name,
+        email: userInfo.email,
+        profilePicture: userInfo.picture,
+        emailVerified: userInfo.email_verified,
+      };
+      const newuser = await addNewUser(obj);
+      if (newuser?._id) {
+        const jwts = await generateJWTs(newuser?.email);
+        
+        return responseClient({
+          res,
+          message: "you have loged in ",
+          payload: jwts,
+        });
+      } else {
+        return responseClient({
+          message: "could not create the user",
+          statusCode: 401,
+          res,
+        });
+      }
+    }
+    const jwts = await generateJWTs(user.email);
+  
+    return responseClient({
+      res,
+      message: "you have loged in ",
+      payload: jwts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// google callback auth controller ends here
