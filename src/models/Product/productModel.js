@@ -1,19 +1,16 @@
-import productCollection from "./productschema.js";
+import productCollection from "./productSchema.js";
 
-productCollection;
-// add new category
-export const addNewProduct = async (obj) => {
-  const product = await productCollection(obj).save();
-  return product;
-};
-
-export const getProduct = async (categoryPath) => {
-  const p = await productCollection.find({
-    categoryPath: { $regex: new RegExp(`^${categoryPath}`, "i") }, // case-insensitive
-  });
-  return p;
-};
-
+// add new product
+export const addNewProduct = async (obj) => await productCollection(obj).save();
+export const getProductsByCategoryId = async (filter) =>
+  await productCollection.find(filter);
+export const getProductById = async (filter) =>
+  await productCollection.findById(filter);
+export const getAllProducts = async () => await productCollection.find();
+export const updateProduct = async (filter, update) =>
+  await productCollection.findOneAndUpdate(filter, update, { new: true });
+export const deleteProducts = async (arrayOfIds) =>
+  await productCollection.deleteMany({ _id: { $in: arrayOfIds } }, []);
 export const updateProductsCategoryPath = async (oldPath, newPath) => {
   return await productCollection.updateMany(
     { categoryPath: { $regex: `^${oldPath}/` } },
