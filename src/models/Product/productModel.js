@@ -11,5 +11,24 @@ export const getProduct = async (categoryPath) => {
   const p = await productCollection.find({
     categoryPath: { $regex: new RegExp(`^${categoryPath}`, "i") }, // case-insensitive
   });
-  return p
+  return p;
+};
+
+export const updateProductsCategoryPath = async (oldPath, newPath) => {
+  return await productCollection.updateMany(
+    { categoryPath: { $regex: `^${oldPath}/` } },
+    [
+      {
+        $set: {
+          categoryPath: {
+            $replaceOne: {
+              input: "$categoryPath",
+              find: oldPath,
+              replacement: newPath,
+            },
+          },
+        },
+      },
+    ]
+  );
 };

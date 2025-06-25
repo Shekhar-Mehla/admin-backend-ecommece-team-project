@@ -20,6 +20,22 @@ export const updateCategory = async (filter, update) => {
     new: true,
   });
 };
-export const updateChildrenCategories = async (filter, update) => {
-  return await categoryCollection.updateMany(filter,update)
+export const updateChildrenCategories = async (oldPath, newPath) => {
+  
+  return await categoryCollection.updateMany(
+    { path: { $regex: `^${oldPath}/` } },
+    [
+      {
+        $set: {
+          path: {
+            $replaceOne: {
+              input: "$path",
+              find: oldPath,
+              replacement: newPath,
+            },
+          },
+        },
+      },
+    ]
+  );
 };
