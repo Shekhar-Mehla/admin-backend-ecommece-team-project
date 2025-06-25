@@ -1,117 +1,147 @@
 import slugify from "slugify";
 import {
-  getCategoryById,
-  getCategoryBySlug,
-} from "../models/Category/categoryModel.js";
+  addNewProduct,
+  deleteProducts,
+  getAllProducts,
+  getProductById,
+  getProductsByCategoryId,
+  updateProduct,
+} from "../models/Product/productModel.js";
 import responseClient from "../utility/responseClient.js";
-import { addNewProduct, getProduct } from "../models/Product/productModel.js";
-// create the product
-export const createNewProduct = async (req, res, next) => {
+import { getCategoryById } from "../models/Category/categoryModel.js";
+// add prodcut controller statrt here
+export const addProductController = async (req, res, next) => {
   try {
-    const {
-      title,
-      description,
-      price,
-      discountPrice,
-      stock,
-      sizes,
-      colors,
-      brand,
-      categoryId,
-      images,
-      thumbnail,
-      status,
-      tags,
-    } = req.body;
-
-    // Slugify title
-    const slug = slugify(title, { lower: true });
-
-    const category = await getCategoryById(categoryId);
-    console.log(category, "cccc");
-
-    if (!category)
-      return responseClient({
-        res,
-        message: "Category not found",
-        statusCode: 404,
-      });
-    const categoryPath = category.path;
-    const obj = {
-      title,
-      description,
-      price,
-      discountPrice,
-      stock,
-      sizes,
-      colors,
-      brand,
-      slug,
-      images,
-      thumbnail,
-      status,
-      tags,
-      categoryId,
-      categoryPath,
-    };
-    const newProduct = await addNewProduct(obj);
-    if (newProduct?._id) {
-      return responseClient({
-        res,
-        message: "new product has been added",
-        payload: newProduct,
-      });
+    const slug = slugify(req.body.title, { lower: true });
+    const category = await getCategoryById(req.body.categoryId);
+    if (!category?._id) {
+      throw new Error("could not find category");
     }
-    responseClient({
-      res,
-      statusCode: 404,
-      message: "could not added the new product",
-    });
+    const productPath = `${category?.path}/${slug}`;
+    const obj = {
+      ...req.body,
+      thumbnail: req.body.images[0],
+      slug,
+      productPath,
+    };
+
+    const product = await addNewProduct(obj);
+    product?._id
+      ? responseClient({ res, message: "Product added succesfully👌" })
+      : responseClient({
+          res,
+          message:
+            "something went wrong,Product cound not added please try again!😒",
+          statusCode: 401,
+        });
+  } catch (error) {
+    next(error);
+  }
+};
+// add prodcut controller end here
+
+export const getProductsByCategoryIdController = async (req, res, next) => {
+  try {
+    const { categoryId } = req.params;
+    if (categoryId) {
+      // call model
+      const products = await getProductsByCategoryId({ categoryId });
+      if (Array.isArray(products)) {
+        return responseClient({
+          message: "here is the list of products based on selected category",
+          res,
+          payload: products,
+        });
+      }
+    } else {
+      return responseClient({ message: "invalid id", res, statusCode: 400 });
+    }
   } catch (error) {
     next(error);
   }
 };
 
-// get the product
-
-export const getproducta = async (req, res, next) => {
+export const getProductByIdController = async (req, res, next) => {
   try {
-    const { slug } = req.params;
+    const { _id } = req.params;
+    if (_id) {
+      // call model
+      const product = await getProductById({ _id });
+      if (product?._id) {
+        return responseClient({
+          message: "here is the product",
+          res,
+          payload: product,
+        });
+      }
+    } else {
+      return responseClient({ message: "invalid id", res, statusCode: 400 });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+export const getAllProductsController = async (req, res, next) => {
+  try {
+    // call model
+    const producstList = await getAllProducts();
+    if (producstList?.length && Array.isArray(producstList)) {
+      return responseClient({
+        message: "here is the product list",
+        res,
+        payload: producstList,
+      });
+    } else {
+      return responseClient({
+        message: "there is no product sorry!😂",
+        res,
+        statusCode: 400,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+export const updateProductsController = async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+
+    // call model
+    const updatedProduct = await updateProduct({ _id }, req.body);
+    if (updatedProduct?._id) {
+      return responseClient({
+        message: "product is updated",
+        res,
+      });
+    } else {
+      return responseClient({
+        message: " sorry!😂 could not update the product. Try again later",
+        res,
+        statusCode: 400,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+export const deleteProductsController = async (req, res, next) => {
+  try {
+    // call model
     
 
-    if (!slug) {
+    const deletedProductByIds = await deleteProducts(req.body);
+    console.log(deletedProductByIds);
+
+    if (deletedProductByIds.deletedCount >= 1) {
       return responseClient({
         res,
-        message: "no slug is found",
-        statusCode: 401,
+        message: `you have deleted ${deletedProductByIds.deletedCount} products☺️`,
       });
     }
-
-    const category = await getCategoryBySlug(slug);
-    console.log(category, "....");
-
-    if (!category?._id) {
-      return responseClient({
-        res,
-        message: "no category  is found",
-        statusCode: 401,
-      });
-    }
-
-    const getProducts = await getProduct(category.path);
-
-    if (!getProducts?.length && Array.isArray(getProducts)) {
-      return responseClient({
-        res,
-        message: "no product found",
-        statusCode: 401,
-      });
-    }
-
     return responseClient({
+      message: "could not deleted the products. Try again later",
+      statusCode: 400,
       res,
-      message: "here is the product",
-      payload: getProducts,
     });
   } catch (error) {
     next(error);
