@@ -9,6 +9,7 @@ import {
 } from "../models/Category/categoryModel.js";
 import responseClient from "../utility/responseClient.js";
 import { getCategoryPath } from "../utility/categoryPath.js";
+import { updateProductsCategoryPath } from "../models/Product/productModel.js";
 export const createNewCategory = async (req, res, next) => {
   try {
     const category = req.body;
@@ -80,19 +81,14 @@ export const updateCategoryController = async (req, res, next) => {
       const updateObj = { name: name, path: path, slug: newslug };
       const updatedCategory = await updateCategory({ _id }, updateObj);
       if (updatedCategory?._id) {
-        // fetch all its children with old path
-        // const allCategories = await getAllCategory();
-        // const children = allCategories.filter((cat) =>
-        //   cat.path.startsWith(oldPath + `/`)
-        // );
-const filter = {path:oldPath + "/"}
+        const updatedChildrens = await updateChildrenCategories(oldPath, path);
+        if (updatedChildrens?.modifiedCount > 0) {
+          console.log(oldPath, path, "...");
+          const updatedProdtcsWithCategoryPath =
+            await updateProductsCategoryPath(oldPath, path);
 
-const newpath = 
-
-const update = {$set:{path:}}
-
-
-       const updatedChildrens = updateChildrenCategories(filter,update)
+          console.log(updatedProdtcsWithCategoryPath);
+        }
 
         //
         // const allChildrens = await getAllCategory({})
