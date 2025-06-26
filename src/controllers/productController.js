@@ -12,30 +12,25 @@ import { getCategoryById } from "../models/Category/categoryModel.js";
 // add prodcut controller statrt here
 export const addProductController = async (req, res, next) => {
   try {
+    console.log(req.body);
+
     const slug = slugify(req.body.title, { lower: true });
     const category = await getCategoryById(req.body.categoryId);
     if (!category?._id) {
       throw new Error("could not find category");
     }
-<<<<<<< Updated upstream
     const productPath = `${category?.path}/${slug}`;
     const obj = {
       ...req.body,
       thumbnail: req.body.images[0],
-=======
-
-    const slug = title.toLowerCase().replace(/ /g, "-");
-
-    const product = await Product.create({
-      title,
-      description,
->>>>>>> Stashed changes
       slug,
       productPath,
     };
+    console.log(obj);
 
-<<<<<<< Updated upstream
     const product = await addNewProduct(obj);
+    console.log(product);
+
     product?._id
       ? responseClient({ res, message: "Product added succesfully👌" })
       : responseClient({
@@ -74,6 +69,8 @@ export const getProductsByCategoryIdController = async (req, res, next) => {
 export const getProductByIdController = async (req, res, next) => {
   try {
     const { _id } = req.params;
+    console.log(_id);
+
     if (_id) {
       // call model
       const product = await getProductById({ _id });
@@ -122,6 +119,7 @@ export const updateProductsController = async (req, res, next) => {
       return responseClient({
         message: "product is updated",
         res,
+        payload: updatedProduct,
       });
     } else {
       return responseClient({
@@ -137,9 +135,8 @@ export const updateProductsController = async (req, res, next) => {
 export const deleteProductsController = async (req, res, next) => {
   try {
     // call model
-    
-
-    const deletedProductByIds = await deleteProducts(req.body);
+    const id = req.params.id;
+    const deletedProductByIds = await deleteProducts([id]);
     console.log(deletedProductByIds);
 
     if (deletedProductByIds.deletedCount >= 1) {
@@ -155,12 +152,5 @@ export const deleteProductsController = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-=======
-    res.status(201).json(product, { message: "Product added successfully" });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error adding product", error: err.message });
->>>>>>> Stashed changes
   }
 };

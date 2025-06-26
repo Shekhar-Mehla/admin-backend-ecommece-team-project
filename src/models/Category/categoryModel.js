@@ -10,5 +10,5 @@ export const getCategoryById = async (_id) => {
 };
 
 export const getAllCategory = async () => {
-  return await categoryCollection.find({});
+  return await categoryCollection.find({}).lean();
 };
