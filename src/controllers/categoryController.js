@@ -9,7 +9,6 @@ import buildCategoryTree from "../utils/buildCategoryTree.js";
 export const createNewCategory = async (req, res, next) => {
   try {
     const category = req.body;
-    
 
     const { path, level } = await getCategoryPath({
       name: category.name,
@@ -23,7 +22,10 @@ export const createNewCategory = async (req, res, next) => {
     };
     const cat = await addNewCategory(obj);
     cat?._id
-      ? responseClient({ res, message: "New Category Added Sucessfully" })
+      ? responseClient({
+          res,
+          message: ` ${category.name}  Category Added Sucessfully`,
+        })
       : responseClient({
           res,
           message: "unable to add New Category",
@@ -40,8 +42,7 @@ export const createNewCategory = async (req, res, next) => {
 //this is for getting all categories
 export const getAllCategories = async (req, res, next) => {
   try {
-<<<<<<< Updated upstream
-    const categories = await getAllCategory().lean();
+    const categories = await getAllCategory();
     if (categories.length && Array.isArray(categories)) {
       const nestedCategories = buildCategoryTree(categories);
       return responseClient({
@@ -58,16 +59,5 @@ export const getAllCategories = async (req, res, next) => {
     }
   } catch (error) {
     next(error);
-=======
-    const categories = await Category.find().lean();
-
-    const nestedCategories = buildCategoryTree(categories);
-    res.status(200).json({ success: true, data: nestedCategories });
-  } catch (err) {
-    console.error("Error fetching categories:", err);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch categories" });
->>>>>>> Stashed changes
   }
 };
