@@ -78,22 +78,34 @@ export const updateCategoryController = async (req, res, next) => {
       });
       // update category
 
-      const updateObj = { name: name, path: path, slug: newslug };
+      const updateObj = { name, path, slug: newslug };
       const updatedCategory = await updateCategory({ _id }, updateObj);
       if (updatedCategory?._id) {
+        // update the children
         const updatedChildrens = await updateChildrenCategories(oldPath, path);
         if (updatedChildrens?.modifiedCount > 0) {
-          console.log(oldPath, path, "...");
           const updatedProdtcsWithCategoryPath =
             await updateProductsCategoryPath(oldPath, path);
 
-          console.log(updatedProdtcsWithCategoryPath);
+          if (updatedProdtcsWithCategoryPath?.modifiedCount > 0) {
+            return responseClient({
+              message: "updated the category successfully",
+              res,
+            });
+          } else {
+            responseClient({
+              message: `categrory has been updated but there is no product under this categry`,
+              res,
+            });
+          }
         }
-
-        //
-        // const allChildrens = await getAllCategory({})
       }
     }
+    return responseClient({
+      res,
+      message: "something went wrong could not update category",
+      statusCode: 400,
+    });
   } catch (error) {
     next(error);
   }
