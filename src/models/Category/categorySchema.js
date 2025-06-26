@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema(
@@ -14,6 +15,7 @@ const categorySchema = new mongoose.Schema(
     description: { type: String }, // Optional description
     icon: { type: String }, // Optional icon url or class
     isFeatured: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
 
     // Flag to highlight featured categories
   },

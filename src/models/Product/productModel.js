@@ -13,13 +13,13 @@ export const deleteProducts = async (arrayOfIds) =>
   await productCollection.deleteMany({ _id: { $in: arrayOfIds } }, []);
 export const updateProductsCategoryPath = async (oldPath, newPath) => {
   return await productCollection.updateMany(
-    { categoryPath: { $regex: `^${oldPath}/` } },
+    { productPath: { $regex: `^${oldPath}/` } },
     [
       {
         $set: {
-          categoryPath: {
+          productPath: {
             $replaceOne: {
-              input: "$categoryPath",
+              input: "$productPath",
               find: oldPath,
               replacement: newPath,
             },
