@@ -50,3 +50,5 @@ export const addProductController = async (req, res) => {
       .json({ message: "Error adding product", error: err.message });
   }
 };
+
+export const getAllProducts = async (req, res) => {};
