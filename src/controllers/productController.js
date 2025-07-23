@@ -17,7 +17,11 @@ export const addProductController = async (req, res, next) => {
     if (!category?._id) {
       throw new Error("could not find category");
     }
-    const productPath = `${category?.path}/${slug}`;
+    const productPath = `${category?.path?.slice(1)}/${slug}`;
+    req.body.colors = req.body?.colors?.map((color) => color.toLowerCase());
+    req.body.brand = req.body?.brand?.toLowerCase();
+   
+
     const obj = {
       ...req.body,
       thumbnail: req.body.images[0],
@@ -127,10 +131,9 @@ export const updateProductsController = async (req, res, next) => {
 export const deleteProductsController = async (req, res, next) => {
   try {
     // call model
-    
 
     const deletedProductByIds = await deleteProducts(req.body);
-    console.log(deletedProductByIds);
+
 
     if (deletedProductByIds.deletedCount >= 1) {
       return responseClient({
