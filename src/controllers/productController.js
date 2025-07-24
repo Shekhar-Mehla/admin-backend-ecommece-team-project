@@ -20,7 +20,8 @@ export const addProductController = async (req, res, next) => {
     const productPath = `${category?.path?.slice(1)}/${slug}`;
     req.body.colors = req.body?.colors?.map((color) => color.toLowerCase());
     req.body.brand = req.body?.brand?.toLowerCase();
-   
+    req.body.mainCategory = category?.path?.split("/").filter(Boolean)[0];
+    console.log(req.body, "24");
 
     const obj = {
       ...req.body,
@@ -133,7 +134,6 @@ export const deleteProductsController = async (req, res, next) => {
     // call model
 
     const deletedProductByIds = await deleteProducts(req.body);
-
 
     if (deletedProductByIds.deletedCount >= 1) {
       return responseClient({
