@@ -15,6 +15,7 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     productPath: { type: String, required: true, index: true },
+    mainCategory: { type: String, required: true, index: true },
     stock: Number,
     sizes: [String],
     colors: [String],
