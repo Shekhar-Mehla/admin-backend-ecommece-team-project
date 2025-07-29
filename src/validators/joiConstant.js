@@ -4,7 +4,7 @@ export const SMALLSTRING = Joi.string().min(3).max(50);
 export const SMALLSTRINGREQ = SMALLSTRING.required();
 export const EMAIL = Joi.string().email({ minDomainSegments: 2 });
 export const EMAILREQ = EMAIL.required();
-export const PHONE = Joi.string().pattern(/^\+[1-9]\d{1,14}$/);
+export const PHONE = Joi.number();
 export const PHONEREQ = PHONE.required();
 export const ADDRESS = Joi.object({
   street: SMALLSTRINGREQ,
@@ -20,5 +20,6 @@ export const PASSWORDREQ = PASSWORD.required();
 export const CONFIRMPASSWORD = Joi.ref("PASSWORDREQ");
 export const THUMBNAIL = Joi.string().uri({ scheme: ["https"] });
 
+export const ROLE = Joi.string().valid("admin", "user");
 export const STATUS = Joi.string().valid("active", "inActive");
 export const STATUSREW = STATUS.required();
