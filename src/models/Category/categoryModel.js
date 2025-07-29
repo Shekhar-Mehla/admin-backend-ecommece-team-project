@@ -14,6 +14,7 @@ export const getCategoryBySlug = async (slug) => {
 };
 export const getAllCategory = async () => {
   return await categoryCollection.find({}).lean();
+
 };
 export const updateCategory = async (filter, update) => {
   return await categoryCollection.findByIdAndUpdate(filter, update, {
@@ -40,4 +41,5 @@ export const updateChildrenCategories = async (oldPath, newPath) => {
       },
     ]
   );
+
 };

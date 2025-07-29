@@ -4,11 +4,19 @@ import morgan from "morgan";
 import path from "path";
 import cors from "cors";
 import "dotenv/config";
+
+
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 import { authRouter } from "./src/routes/authRoutes.js";
 import productRouter from "./src/routes/productRoutes.js";
 import categoryRouter from "./src/routes/categoryRoute.js";
+
+// import cloudnaryConfig from "./src/config/cloudnaryConfig.js/index.js";
+
+import orderRouter from "./src/Routes/orderRoutes.js";
+
 import imageRouter from "./src/Routes/imageRoute.js";
+
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -17,6 +25,7 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+
 
 // cloudnary cinfiguration
 // cloudnaryConfig();
@@ -36,6 +45,7 @@ app.use("/api/v1/image", imageRouter); // image upload api for cloudnary
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/order", orderRouter);
 
 // connect MongoDB
 connection()

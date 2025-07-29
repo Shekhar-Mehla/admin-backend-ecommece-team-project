@@ -13,7 +13,9 @@ import {
 import {
   registerUserValidtion,
   loginValidation,
+
 } from "../validators/schemas/validationSchema.js";
+
 import { authMiddleware, refreshAuth } from "../middlewares/authMiddleware.js";
 
 export const authRouter = express.Router();
@@ -35,6 +37,7 @@ authRouter.get("/user-info", authMiddleware, getUser);
 
 // get all the user
 authRouter.get("/all-users", getAllUsers);
+
 
 // GET NEW ACCESS TOKEN | GET | PRIVATE ROUTE
 authRouter.get("/accessjwt", refreshAuth);

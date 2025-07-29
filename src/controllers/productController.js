@@ -12,16 +12,14 @@ import { getCategoryById } from "../models/Category/categoryModel.js";
 // add prodcut controller statrt here
 export const addProductController = async (req, res, next) => {
   try {
+    console.log(req.body);
+
     const slug = slugify(req.body.title, { lower: true });
     const category = await getCategoryById(req.body.categoryId);
     if (!category?._id) {
       throw new Error("could not find category");
     }
     const productPath = `${category?.path?.slice(1)}/${slug}`;
-    req.body.colors = req.body?.colors?.map((color) => color.toLowerCase());
-    req.body.brand = req.body?.brand?.toLowerCase();
-    req.body.mainCategory = category?.path?.split("/").filter(Boolean)[0];
-    console.log(req.body, "24");
 
     const obj = {
       ...req.body,
@@ -29,8 +27,11 @@ export const addProductController = async (req, res, next) => {
       slug,
       productPath,
     };
+    console.log(obj);
 
     const product = await addNewProduct(obj);
+    console.log(product);
+
     product?._id
       ? responseClient({ res, message: "Product added succesfully👌" })
       : responseClient({
@@ -69,6 +70,8 @@ export const getProductsByCategoryIdController = async (req, res, next) => {
 export const getProductByIdController = async (req, res, next) => {
   try {
     const { _id } = req.params;
+    console.log(_id);
+
     if (_id) {
       // call model
       const product = await getProductById({ _id });
@@ -117,6 +120,7 @@ export const updateProductsController = async (req, res, next) => {
       return responseClient({
         message: "product is updated",
         res,
+        payload: updatedProduct,
       });
     } else {
       return responseClient({
@@ -134,6 +138,7 @@ export const deleteProductsController = async (req, res, next) => {
     // call model
     const id = req.params.id;
     const deletedProductByIds = await deleteProducts([id]);
+
 
     if (deletedProductByIds.deletedCount >= 1) {
       return responseClient({
