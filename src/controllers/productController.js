@@ -19,7 +19,7 @@ export const addProductController = async (req, res, next) => {
     if (!category?._id) {
       throw new Error("could not find category");
     }
-    const productPath = `${category?.path}/${slug}`;
+    const productPath = `${category?.path?.slice(1)}/${slug}`;
     const obj = {
       ...req.body,
       thumbnail: req.body.images[0],

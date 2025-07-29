@@ -13,6 +13,7 @@ import productRouter from "./src/routes/productRoutes.js";
 import categoryRouter from "./src/routes/categoryRoute.js";
 // import cloudnaryConfig from "./src/config/cloudnaryConfig.js/index.js";
 import imageRouter from "./src/routes/imageRoute.js";
+import orderRouter from "./src/Routes/orderRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -55,6 +56,7 @@ app.use("/api/v1/image", imageRouter); // image upload api for cloudnary
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/order", orderRouter);
 
 // global error handler make sure to keep these middleware at the very bottom
 
