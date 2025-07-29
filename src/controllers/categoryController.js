@@ -14,7 +14,7 @@ import buildCategoryTree from "../utility/buildCategoryTree.js";
 export const createNewCategory = async (req, res, next) => {
   try {
     const category = req.body;
-    console.log(req.body, "......");
+
 
     const { path, level } = await getCategoryPath({
       name: category.name,
@@ -30,7 +30,9 @@ export const createNewCategory = async (req, res, next) => {
     const cat = await addNewCategory(obj);
 
     cat?._id
+
       ? responseClient({ req, res, message: "New Category Added Sucessfully" })
+
       : responseClient({
           req,
           res,
@@ -47,6 +49,8 @@ export const createNewCategory = async (req, res, next) => {
 export const getAllCategories = async (req, res, next) => {
   try {
     const categories = await getAllCategory();
+
+
 
     if (categories.length && Array.isArray(categories)) {
       const nestedCategories = buildCategoryTree(categories);

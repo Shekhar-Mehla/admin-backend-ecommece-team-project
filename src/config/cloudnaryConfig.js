@@ -14,9 +14,11 @@ import { v2 as cloudinary } from "cloudinary";
 
 // Ensure the required environment variables are set
 if (
+
   !process.env.CLOUD_NAME ||
   !process.env.API_KEY ||
   !process.env.API_SECRET
+
 ) {
   throw new Error(
     "Cloudinary configuration missing. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your environment."
@@ -24,9 +26,11 @@ if (
 }
 
 cloudinary.config({
+
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
+
 });
 
 // Upload a local file to Cloudinary and return the public URL
@@ -42,7 +46,6 @@ const uploadMediaToCloudinary = async (filepath) => {
   }
 };
 
-// Delete a media from Cloudinary
 const deleteMediaFromCloudinary = async (publicId) => {
   try {
     // Step 1: Try deleting the media as an image first
@@ -51,6 +54,7 @@ const deleteMediaFromCloudinary = async (publicId) => {
     });
 
     // Step 2: Check the result of the deletion
+
     if (result.result === "ok" || result.result === "deleted") {
       return true;
     } else if (result.result === "not found") {
