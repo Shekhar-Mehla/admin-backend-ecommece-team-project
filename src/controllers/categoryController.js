@@ -10,14 +10,17 @@ import {
 import responseClient from "../utility/responseClient.js";
 import { getCategoryPath } from "../utility/categoryPath.js";
 import { updateProductsCategoryPath } from "../models/Product/productModel.js";
+import buildCategoryTree from "../utility/buildCategoryTree.js";
 export const createNewCategory = async (req, res, next) => {
   try {
     const category = req.body;
     console.log(req.body, "......");
+
     const { path, level } = await getCategoryPath({
       name: category.name,
       parentId: category.parent === "" ? null : category.parent,
     });
+
     const obj = {
       ...category,
       slug: slugify(category.name, { lower: true }),
@@ -25,6 +28,7 @@ export const createNewCategory = async (req, res, next) => {
       level,
     };
     const cat = await addNewCategory(obj);
+
     cat?._id
       ? responseClient({ req, res, message: "New Category Added Sucessfully" })
       : responseClient({
@@ -40,20 +44,24 @@ export const createNewCategory = async (req, res, next) => {
     next(error);
   }
 };
-export const getALLCategoryController = async (req, res, next) => {
+export const getAllCategories = async (req, res, next) => {
   try {
-    const allCategories = await getAllCategory();
-    allCategories?.length
-      ? responseClient({
-          res,
-          message: "here is all category",
-          payload: allCategories,
-        })
-      : responseClient({
-          res,
-          statusCode: 400,
-          message: "something went wrong unable to get data",
-        });
+    const categories = await getAllCategory();
+
+    if (categories.length && Array.isArray(categories)) {
+      const nestedCategories = buildCategoryTree(categories);
+      return responseClient({
+        res,
+        message: "here is the list of all categories",
+        payload: nestedCategories,
+      });
+    } else {
+      responseClient({
+        res,
+        statusCode: 400,
+        message: "something went wrong could not create categpry",
+      });
+    }
   } catch (error) {
     next(error);
   }
