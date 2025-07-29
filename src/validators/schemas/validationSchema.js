@@ -4,7 +4,9 @@ import {
   EMAILREQ,
   PASSWORDREQ,
   PHONE,
+  ROLE,
   SMALLSTRINGREQ,
+  STATUS,
   THUMBNAIL,
 } from "../joiConstant.js";
 
@@ -14,6 +16,8 @@ const registerUserValidtion = (req, res, next) => {
     fName: SMALLSTRINGREQ,
     lName: SMALLSTRINGREQ,
     email: EMAILREQ,
+    role: ROLE,
+    status: STATUS,
     phone: PHONE,
     address: ADDRESS,
     password: PASSWORDREQ,
@@ -30,6 +34,7 @@ const loginValidation = (req, res, next) => {
     email: EMAILREQ,
     password: PASSWORDREQ,
   };
+  console.log(req.body, "....req.body 33");
   joiValidation({ req, res, next, obj });
 };
 //email validation

@@ -1,4 +1,3 @@
-
 import productCollection from "./productSchema.js";
 
 // add new product
@@ -11,4 +10,22 @@ export const getAllProducts = async () => await productCollection.find();
 export const updateProduct = async (filter, update) =>
   await productCollection.findOneAndUpdate(filter, update, { new: true });
 export const deleteProducts = async (arrayOfIds) =>
-  await productCollection.deleteMany({ _id: { $in: arrayOfIds } },[]);
+  await productCollection.deleteMany({ _id: { $in: arrayOfIds } }, []);
+export const updateProductsCategoryPath = async (oldPath, newPath) => {
+  return await productCollection.updateMany(
+    { productPath: { $regex: `^${oldPath}/` } },
+    [
+      {
+        $set: {
+          productPath: {
+            $replaceOne: {
+              input: "$productPath",
+              find: oldPath,
+              replacement: newPath,
+            },
+          },
+        },
+      },
+    ]
+  );
+};

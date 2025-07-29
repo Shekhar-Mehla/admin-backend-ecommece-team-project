@@ -20,6 +20,7 @@ export const addProductController = async (req, res, next) => {
       throw new Error("could not find category");
     }
     const productPath = `${category?.path?.slice(1)}/${slug}`;
+
     const obj = {
       ...req.body,
       thumbnail: req.body.images[0],
@@ -137,7 +138,7 @@ export const deleteProductsController = async (req, res, next) => {
     // call model
     const id = req.params.id;
     const deletedProductByIds = await deleteProducts([id]);
-    console.log(deletedProductByIds);
+
 
     if (deletedProductByIds.deletedCount >= 1) {
       return responseClient({
