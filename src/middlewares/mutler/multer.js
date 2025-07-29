@@ -5,7 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 import fs from "fs";
-import cloudnaryConfig from "../../config/cloudnaryConfig.js";
+import cloudnaryConfig from "../../config/cloudnaryConfig1.js";
 // const storage = multer.diskStorage({
 //   destination: (req, file, cb) => {
 //     // check if directory is already availble if not create one

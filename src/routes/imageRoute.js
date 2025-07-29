@@ -14,6 +14,7 @@ import {
   uploadMediaToCloudinary,
 } from "../config/cloudnaryConfig.js";
 
+
 const imageRouter = express.Router();
 
 // Configure disk storage for multer
@@ -50,9 +51,12 @@ const upload = multer({
   },
 });
 
+
 // POST | upload a file | create
 imageRouter.post("/", upload.array("images", 5), async (req, res, next) => {
   try {
+
+
     // Check if files exist
     if (!req.files || req.files.length === 0) {
       return responseClient({
@@ -74,6 +78,7 @@ imageRouter.post("/", upload.array("images", 5), async (req, res, next) => {
       res,
       payload: results,
       message: "Files uploaded successfully",
+
     });
   } catch (error) {
     next(error);
@@ -85,6 +90,7 @@ imageRouter.delete("/delete/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
 
+
     if (!id) {
       return responseClient({
         res,
@@ -93,19 +99,23 @@ imageRouter.delete("/delete/:id", async (req, res, next) => {
       });
     }
 
-    // call deleteMediaFromCloudinary function to delete the media
     const result = await deleteMediaFromCloudinary(id);
     if (result) {
       return responseClient({
         res,
         payload: {},
+
         message: "Media removed successfully!",
+
       });
     } else {
       return responseClient({
         res,
         statusCode: 400,
+
+
         message: "Media not found or could not be deleted",
+
       });
     }
   } catch (error) {
