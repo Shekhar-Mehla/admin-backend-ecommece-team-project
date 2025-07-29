@@ -2,13 +2,14 @@ import express from "express";
 
 import {
   createNewCategory,
-  getALLCategoryController,
+  getAllCategories,
   updateCategoryController,
 } from "../controllers/categoryController.js";
+// import { authMiddleware } from "../middlewares/authMiddleware.js";
 export const categoryRouter = express.Router();
 
 categoryRouter.post("/addCategory", createNewCategory);
-categoryRouter.get("/", getALLCategoryController);
+categoryRouter.get("/getallCategory", getAllCategories);
 categoryRouter.patch("/updateCategory", updateCategoryController);
 
 export default categoryRouter;

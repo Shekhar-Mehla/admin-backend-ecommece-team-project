@@ -132,8 +132,8 @@ export const updateProductsController = async (req, res, next) => {
 export const deleteProductsController = async (req, res, next) => {
   try {
     // call model
-
-    const deletedProductByIds = await deleteProducts(req.body);
+    const id = req.params.id;
+    const deletedProductByIds = await deleteProducts([id]);
 
     if (deletedProductByIds.deletedCount >= 1) {
       return responseClient({
