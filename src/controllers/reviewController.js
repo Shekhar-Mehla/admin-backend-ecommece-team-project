@@ -80,22 +80,22 @@ export const updateReviewStatusController = async (req, res, next) => {
     }
 
     // If status is rejected, delete the review
-    if (newStatus === "rejected") {
-      const deletedReview = await deleteReview(reviewId);
-      if (deletedReview?._id) {
-        return responseClient({
-          message: "Review rejected and deleted successfully",
-          res,
-          payload: deletedReview,
-        });
-      } else {
-        return responseClient({
-          message: "Failed to reject and delete review",
-          res,
-          statusCode: 400,
-        });
-      }
-    }
+    // if (newStatus === "rejected") {
+    //   const deletedReview = await deleteReview(reviewId);
+    //   if (deletedReview?._id) {
+    //     return responseClient({
+    //       message: "Review rejected and deleted successfully",
+    //       res,
+    //       payload: deletedReview,
+    //     });
+    //   } else {
+    //     return responseClient({
+    //       message: "Failed to reject and delete review",
+    //       res,
+    //       statusCode: 400,
+    //     });
+    //   }
+    // }
 
     // Otherwise, update the review status
     const updatedReview = await updateReview(reviewId, newStatus);
