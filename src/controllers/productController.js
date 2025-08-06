@@ -139,7 +139,6 @@ export const deleteProductsController = async (req, res, next) => {
     const id = req.params.id;
     const deletedProductByIds = await deleteProducts([id]);
 
-
     if (deletedProductByIds.deletedCount >= 1) {
       return responseClient({
         res,
