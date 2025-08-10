@@ -1,10 +1,15 @@
 import express from "express";
-import { orderStatusController } from "../controllers/orderController.js";
+import {
+  getDashboardData,
+  orderStatusController,
+} from "../controllers/orderController.js";
 import { fetchAllOrdersAdmin } from "../controllers/orderController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 //this is for creating the order
-router.patch("/status/:id", orderStatusController);
-router.get("/history", fetchAllOrdersAdmin);
+router.patch("/status/:id", authMiddleware, orderStatusController);
+router.get("/history", authMiddleware, fetchAllOrdersAdmin);
+router.get("/dashboard", authMiddleware, getDashboardData);
 
 export default router;
