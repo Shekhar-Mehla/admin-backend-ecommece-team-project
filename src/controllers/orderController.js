@@ -192,3 +192,44 @@ export const getDashboardData = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch dashboard data" });
   }
 };
+
+export const getTopProducts = async (req, res, next) => {
+  try {
+    const topProducts = await Order.aggregate([
+      { $unwind: "$items" }, // break each product line into its own doc
+      {
+        $group: {
+          _id: "$items.productId",
+          sold: { $sum: "$items.quantity" },
+          revenue: { $sum: { $multiply: ["$items.quantity", "$items.price"] } },
+        },
+      },
+      {
+        $lookup: {
+          from: "products", // MongoDB collection name
+          localField: "_id",
+          foreignField: "_id",
+          as: "productInfo",
+        },
+      },
+      { $unwind: "$productInfo" },
+      {
+        $project: {
+          _id: 1,
+          sold: 1,
+          revenue: 1,
+          title: "$productInfo.title",
+        },
+      },
+      { $sort: { sold: -1 } }, // most sold first
+      { $limit: 6 }, // top 6
+    ]);
+
+    responseClient({
+      res,
+      payload: topProducts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

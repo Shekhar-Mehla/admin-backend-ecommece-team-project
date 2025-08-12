@@ -11,11 +11,9 @@ import responseClient from "../utility/responseClient.js";
 export const authMiddleware = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    console.log("Authorization header AUTHMIDDLEWARE:", authorization);
 
     // validate if accessJWT is valid
     const decoded = verifyAccessJWT(authorization);
-    console.log("Decoded JWT:", decoded);
 
     if (!decoded?.email) {
       return responseClient({
@@ -69,7 +67,6 @@ export const authMiddleware = async (req, res, next) => {
 export const refreshAuth = async (req, res) => {
   try {
     const { authorization } = req.headers;
-    console.log("Authorization header REFRESHAUTH:", authorization);
 
     // validate and decode refresh token
     const decoded = verifyRefreshJWT(authorization);
