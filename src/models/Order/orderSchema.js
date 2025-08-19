@@ -77,6 +77,7 @@ const OrderSchema = new mongoose.Schema(
       ],
       default: "Order Placed",
     },
+    orderNotes: { type: String, trim: true },
   },
   {
     timestamps: true,
