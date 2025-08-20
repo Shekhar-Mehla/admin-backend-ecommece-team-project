@@ -34,7 +34,7 @@ const loginValidation = (req, res, next) => {
     email: EMAILREQ,
     password: PASSWORDREQ,
   };
-  console.log(req.body, "....req.body 33");
+
   joiValidation({ req, res, next, obj });
 };
 //email validation
