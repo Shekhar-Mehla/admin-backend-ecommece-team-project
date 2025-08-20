@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 import responseClient from "../utility/responseClient.js";
 import { generateJWTs } from "../utility/jwthelper.js";
 import { sendResetPasswordLinkEmail } from "../utility/nodemailerHelper.js";
+import e from "express";
 
 export const registerNewUser = async (req, res, next) => {
   try {
@@ -60,6 +61,11 @@ export const updateUserDetails = async (req, res) => {
     const { userId } = req.params;
     const userData = req.body;
 
+    //check if there is password in req.body
+    if (req.body.password) {
+      req.body.password = hashPassword(req.body.password);
+    }
+
     // Check if userId is provided
     if (!userId) {
       return responseClient({
@@ -69,19 +75,23 @@ export const updateUserDetails = async (req, res) => {
       });
     }
     const updatedUser = await updateUser({ _id: userId }, userData);
-    return responseClient({
-      res,
-      payload: updatedUser,
-      message: "User updated successfully",
-    });
+
+    if (updatedUser?._id) {
+      return responseClient({
+        res,
+        payload: updatedUser,
+        message: "User updated successfully",
+      });
+    } else {
+      return responseClient({
+        res,
+        message: "Error while updating user",
+        statusCode: 500,
+      });
+    }
   } catch (error) {
-    responseClient({
-      res,
-      message: error.message,
-      statusCode: 500,
-    });
+    next(error);
   }
-  next(error);
 };
 //delete user
 export const deleteUser = async (req, res) => {
