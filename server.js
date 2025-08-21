@@ -16,6 +16,7 @@ import orderRouter from "./src/Routes/orderRoutes.js";
 
 import imageRouter from "./src/Routes/imageRoute.js";
 import reviewRouter from "./src/Routes/reviewRoutes.js";
+import couponRouter from "./src/Routes/couponRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -45,6 +46,7 @@ app.use("/api/v1/product", productRouter);
 app.use("/api/v1/category", categoryRouter);
 app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/review", reviewRouter);
+app.use("/api/v1/coupon", couponRouter);
 
 // connect MongoDB
 connection()
