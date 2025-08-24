@@ -6,18 +6,13 @@ import cors from "cors";
 import "dotenv/config";
 
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
-import { authRouter } from "./src/Routes/authRoutes.js";
-
-import categoryRouter from "./src/Routes/categoryRoute.js";
-import productRouter from "./src/Routes/productRoutes.js";
-
-// import cloudnaryConfig from "./src/config/cloudnaryConfig.js/index.js";
-
-import orderRouter from "./src/Routes/orderRoutes.js";
-
-import imageRouter from "./src/Routes/imageRoute.js";
-import reviewRouter from "./src/Routes/reviewRoutes.js";
-import couponRouter from "./src/Routes/couponRoutes.js";
+import authRouter from "./src/routes/authRoutes.js";
+import categoryRouter from "./src/routes/categoryRoute.js";
+import productRouter from "./src/routes/productRoutes.js";
+import orderRouter from "./src/routes/orderRoutes.js";
+import imageRouter from "./src/routes/imageRoute.js";
+import reviewRouter from "./src/routes/reviewRoutes.js";
+import couponRouter from "./src/routes/couponRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8001;
