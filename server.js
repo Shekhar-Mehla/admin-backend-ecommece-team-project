@@ -7,10 +7,10 @@ import "dotenv/config";
 
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 import authRouter from "./src/routes/authRoutes.js";
-import categoryRouter from "./src/routes/categoryRoute.js";
+import categoryRouter from "./src/routes/categoryRoutes.js";
 import productRouter from "./src/routes/productRoutes.js";
 import orderRouter from "./src/routes/orderRoutes.js";
-import imageRouter from "./src/routes/imageRoute.js";
+import imageRouter from "./src/routes/imageRoutes.js";
 import reviewRouter from "./src/routes/reviewRoutes.js";
 import couponRouter from "./src/routes/couponRoutes.js";
 
