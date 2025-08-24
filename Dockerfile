@@ -14,7 +14,7 @@ RUN npm install --production
 COPY . .
 
 # Expose port (make sure it matches the one in server.js, usually 5000 or 8080)
-EXPOSE 8000
+EXPOSE 8001
 
 # Run the app
 CMD ["npm", "start"]
