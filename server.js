@@ -7,8 +7,9 @@ import "dotenv/config";
 
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 import { authRouter } from "./src/routes/authRoutes.js";
-import productRouter from "./src/routes/productRoutes.js";
+
 import categoryRouter from "./src/routes/categoryRoute.js";
+import productRouter from "./src/routes/productRoutes.js";
 
 // import cloudnaryConfig from "./src/config/cloudnaryConfig.js/index.js";
 
