@@ -19,7 +19,7 @@ import reviewRouter from "./src/Routes/reviewRoutes.js";
 import couponRouter from "./src/Routes/couponRoutes.js";
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
 //middlewares
 app.use(cors());
