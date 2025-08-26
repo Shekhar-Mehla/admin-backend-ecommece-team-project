@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8001
 
 # Run the app
-CMD ["yarn", "start"]
+CMD ["yarn", "dev"]

@@ -2,7 +2,7 @@ name: CI/CD for Ecommerce Backend
 
 on:
   push:
-    branches: [dev]
+    branches: [main]
 
 jobs:
   deploy:
