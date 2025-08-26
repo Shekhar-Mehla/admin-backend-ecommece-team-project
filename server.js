@@ -47,9 +47,7 @@ app.use("/api/v1/coupon", couponRouter);
 // connect MongoDB
 connection()
   .then(() => {
-    /** ready to use. The `mongoose.connect()` promise resolves to mongoose
-    instance. */
-    app.listen(PORT, (error) => {
+    app.listen(PORT, "0.0.0.0", (error) => {
       return !error
         ? console.log(`server is running at http://localhost:${PORT}`)
         : console.log(error);
