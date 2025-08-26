@@ -5,7 +5,7 @@ FROM node:22
 WORKDIR /app
 
 # Copy package.json and package-lock.json first (for caching)
-COPY package.json yarn.lock ./
+COPY package.json ./
 
 # Install dependencies
 RUN yarn install --production
