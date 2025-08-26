@@ -23,11 +23,11 @@ jobs:
 
       # 3️⃣ Build Docker image
       - name: Build Docker image
-        run: docker build -t ghcr.io/ecommerce-admin-backend:latest -f Dockerfile .
+        run: docker build -t ghcr.io/shekhar-mehla/admin-backend-ecommece-team-project:latest -f Dockerfile .
 
       # 4️⃣ Push Docker image to GHCR
       - name: Push Docker image
-        run: docker push ghcr.io/ecommerce-admin-backend:latest
+        run: docker push ghcr.io/shekhar-mehla/admin-backend-ecommece-team-project:latest
 
       # 5️⃣ Deploy to EC2
       - name: Deploy to EC2
@@ -43,7 +43,7 @@ jobs:
             docker rm ecommerce-backend || true
 
             # Pull the latest Docker image
-            docker pull ghcr.io/ecommerce-admin-backend:latest
+            docker pull ghcr.io/shekhar-mehla/admin-backend-ecommece-team-project:latest
 
             # Run container with all environment variables directly from GitHub secrets
             docker run -d -p 8001:8001 \
@@ -63,7 +63,7 @@ jobs:
                -e GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}' \
                -e GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
               --name ecommerce-backend \
-              ghcr.io/ecommerce-admin-backend:latest
+              ghcr.io/shekhar-mehla/admin-backend-ecommece-team-project:latest
 
             # Optional: Verify container is running
             docker ps
