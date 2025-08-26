@@ -14,7 +14,7 @@ import categoryRouter from "./src/routes/categoryRoute.js";
 import cloudnaryConfig from "./src/config/cloudnaryConfig.js";
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
 //middlewares
 app.use(cors());
@@ -29,7 +29,7 @@ connection()
   .then(() => {
     /** ready to use. The `mongoose.connect()` promise resolves to mongoose
     instance. */
-    app.listen(PORT, (error) => {
+    app.listen(PORT, "0.0.0.0", (error) => {
       return !error
         ? console.log(`server is running at http://localhost:${PORT}`)
         : console.log(error);
@@ -41,8 +41,8 @@ connection()
 const __dirname = path.resolve();
 
 // middlewares
-app.use(cors());
-app.use(express.json());
+// app.use(cors());
+// app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
