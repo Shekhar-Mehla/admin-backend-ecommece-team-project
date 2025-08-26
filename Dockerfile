@@ -4,17 +4,17 @@ FROM node:22
 # Set working directory
 WORKDIR /app
 
-# Copy dependency files first for layer caching
+# Copy package.json and yarn.lock
 COPY package.json yarn.lock ./
 
-# Install only production dependencies
-RUN yarn install --production
+# Install dependencies (limit concurrency to avoid 429)
+RUN yarn install --production --network-concurrency 1
 
-# Copy the rest of the application
+# Copy rest of the app
 COPY . .
 
-# Expose the port the app runs on (match with server.js)
+# Expose port (make sure it matches your app)
 EXPOSE 8001
 
-# Start the application
+# Start the app
 CMD ["yarn", "start"]
