@@ -8,15 +8,11 @@ import {
 } from "../controllers/categoryController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
-const categoryRouter = express.Router();
+const router = express.Router();
 
-categoryRouter.post("/addCategory", authMiddleware, createNewCategory);
-categoryRouter.get("/getallCategory", authMiddleware, getAllCategories);
-categoryRouter.patch(
-  "/updateCategory/:id",
-  authMiddleware,
-  updateCategoryController
-);
-categoryRouter.delete("/delete/:id", authMiddleware, deleteCategory);
+router.post("/addCategory", authMiddleware, createNewCategory);
+router.get("/getallCategory", authMiddleware, getAllCategories);
+router.patch("/updateCategory/:id", authMiddleware, updateCategoryController);
+router.delete("/delete/:id", authMiddleware, deleteCategory);
 
-export default categoryRouter;
+export default router;

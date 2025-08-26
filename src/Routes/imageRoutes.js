@@ -1,11 +1,3 @@
-// import express from "express";
-// import { upload } from "../middlewares/mutler/multer.js";
-// import imageController from "../controllers/imageController.js";
-
-// export const imageRouter = express.Router();
-
-// imageRouter.post("/", upload.array("profilePicture"), imageController);
-
 import express from "express";
 import multer from "multer";
 import responseClient from "../utility/responseClient.js";
@@ -13,7 +5,6 @@ import {
   deleteMediaFromCloudinary,
   uploadMediaToCloudinary,
 } from "../config/cloudnaryConfig.js";
-
 
 const imageRouter = express.Router();
 
@@ -51,12 +42,9 @@ const upload = multer({
   },
 });
 
-
 // POST | upload a file | create
 imageRouter.post("/", upload.array("images", 5), async (req, res, next) => {
   try {
-
-
     // Check if files exist
     if (!req.files || req.files.length === 0) {
       return responseClient({
@@ -78,7 +66,6 @@ imageRouter.post("/", upload.array("images", 5), async (req, res, next) => {
       res,
       payload: results,
       message: "Files uploaded successfully",
-
     });
   } catch (error) {
     next(error);
@@ -89,7 +76,6 @@ imageRouter.post("/", upload.array("images", 5), async (req, res, next) => {
 imageRouter.delete("/delete/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-
 
     if (!id) {
       return responseClient({
@@ -106,16 +92,13 @@ imageRouter.delete("/delete/:id", async (req, res, next) => {
         payload: {},
 
         message: "Media removed successfully!",
-
       });
     } else {
       return responseClient({
         res,
         statusCode: 400,
 
-
         message: "Media not found or could not be deleted",
-
       });
     }
   } catch (error) {

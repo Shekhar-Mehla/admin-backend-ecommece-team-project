@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --production
+RUN yarn install --production
 
 # Copy rest of the backend code
 COPY . .
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8001
 
 # Run the app
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
