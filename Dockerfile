@@ -5,10 +5,10 @@ FROM node:22
 WORKDIR /app
 
 # Copy package.json and package-lock.json first (for caching)
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 
 # Install dependencies
-RUN npm install --production
+RUN yarn install --production
 
 # Copy rest of the backend code
 COPY . .
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8000
 
 # Run the app
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
