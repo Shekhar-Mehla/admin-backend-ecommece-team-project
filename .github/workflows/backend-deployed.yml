@@ -1,0 +1,70 @@
+name: CI/CD for Ecommerce Backend
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Log in to GitHub Container Registry
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3️⃣ Build Docker image
+      - name: Build Docker image
+        run: docker build -t ghcr.io/ecommerce-admin-backend:latest -f Dockerfile .
+
+      # 4️⃣ Push Docker image to GHCR
+      - name: Push Docker image
+        run: docker push ghcr.io/ecommerce-admin-backend:latest
+
+      # 5️⃣ Deploy to EC2
+      - name: Deploy to EC2
+        run: |
+          # Decode the Base64 SSH key and save it
+          echo "${{ secrets.EC2_SSH_KEY_BASE64 }}" | base64 --decode > /tmp/ec2_key.pem
+          chmod 600 /tmp/ec2_key.pem
+
+          # SSH and run commands on EC2
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+            # Stop and remove old container if exists
+            docker stop ecommerce-backend || true
+            docker rm ecommerce-backend || true
+
+            # Pull the latest Docker image
+            docker pull ghcr.io/ecommerce-admin-backend:latest
+
+            # Run container with all environment variables directly from GitHub secrets
+            docker run -d -p 8001:8001 \
+              
+              
+               -e MONGO_URI='${{ secrets.MONGO_URI }}' \
+               -e CLOUD_NAME='${{ secrets.CLOUD_NAME }}' \
+               -e API_KEY='${{ secrets.API_KEY }}' \
+               -e API_SECRET='${{ secrets.API_SECRET }}' \
+               -e SMTP_USER='${{ secrets.SMTP_USER }}' \
+               -e SMTP_PASS='${{ secrets.SMTP_PASS }}' \
+               -e SMTP_HOST='${{ secrets.SMTP_HOST }}' \
+               -e SMTP_PORT='${{ secrets.SMTP_PORT }}' \
+               -e ROOT_URL='${{ secrets.ROOT_URL }}' \
+               -e JWT_ACCESS_SECRET='${{ secrets.JWT_ACCESS_SECRET }}' \
+               -e JWT_REFRESH_SECRE='${{ secrets.JWT_REFRESH_SECRE }}' \
+               -e GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}' \
+               -e GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
+              --name ecommerce-backend \
+              ghcr.io/ecommerce-admin-backend:latest
+
+            # Optional: Verify container is running
+            docker ps
+          EOF

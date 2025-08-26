@@ -7,6 +7,7 @@ import {
   updateProductsController,
   deleteProductsController,
 } from "../controllers/productController.js";
+<<<<<<< HEAD
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 const productRouter = express.Router();
 
@@ -24,5 +25,16 @@ productRouter.delete(
   authMiddleware,
   deleteProductsController
 );
+=======
+import addProductJoiValidator from "../validators/schemas/addProductJoiValidator.js";
+const productRouter = express.Router();
+
+productRouter.post("/addProduct",addProductJoiValidator, addProductController);
+productRouter.get("/:categoryId", getProductsByCategoryIdController);
+productRouter.get("/Id/:_id", getProductByIdController);
+productRouter.get("/", getAllProductsController);
+productRouter.patch("/:_id", updateProductsController);
+productRouter.delete("/deleteProducts", deleteProductsController);
+>>>>>>> feature/social-auth
 
 export default productRouter;
