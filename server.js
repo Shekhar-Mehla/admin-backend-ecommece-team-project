@@ -4,7 +4,6 @@ import morgan from "morgan";
 import path from "path";
 import cors from "cors";
 import "dotenv/config";
-
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 import authRouter from "./src/routes/authRoutes.js";
 import categoryRouter from "./src/routes/categoryRoutes.js";
@@ -18,19 +17,21 @@ const app = express();
 const PORT = process.env.PORT || 8001;
 
 //middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.ROOT_URL,
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  })
+);
+
 app.use(express.json());
 app.use(morgan("dev"));
 
-// cloudnary cinfiguration
-// cloudnaryConfig();
-
 // get the current directory name
 const __dirname = path.resolve();
-
-// middlewares
-app.use(cors());
-app.use(express.json());
+// static files
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
