@@ -61,16 +61,15 @@ connection()
   })
   .catch((error) => console.log(error));
 
-<<<<<<< HEAD
-=======
+
 // get the current directory name
-const __dirname = path.resolve();
+// const __dirname = path.resolve();
 
-// middlewares
-// app.use(cors());
-// app.use(express.json());
+// // middlewares
+// // app.use(cors());
+// // app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
 
@@ -80,7 +79,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/category", categoryRouter);
 
->>>>>>> feature/social-auth
+
 // global error handler make sure to keep these middleware at the very bottom
 // page not found error
 app.use((req, res, next) => {
