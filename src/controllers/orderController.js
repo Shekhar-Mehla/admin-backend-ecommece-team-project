@@ -1,6 +1,6 @@
 import Order from "../models/Order/orderSchema.js";
 import User from "../models//User/userSchema.js";
-import Product from "../models/Product/productSchema.js";
+import Product from "../models//Product/productSchema.js";
 
 import responseClient from "../utility/responseClient.js";
 
