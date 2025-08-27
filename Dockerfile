@@ -1,15 +1,20 @@
-FROM node:22
+# Use official Node.js image
+FROM node:20-alpine
 
+# Set working directory
 WORKDIR /app
 
-# Copy package.json first
-COPY package.json ./
+# Copy package.json and yarn.lock first for caching
+COPY package.json yarn.lock ./
 
-# Install dependencies (yarn will create yarn.lock if missing)
-RUN yarn install || npm install
+# Install dependencies
+RUN yarn install --frozen-lockfile
 
-# Copy rest of the code
+# Copy the rest of the project
 COPY . .
 
+# Expose port
 EXPOSE 8000
+
+# Start the server
 CMD ["node", "server.js"]
