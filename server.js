@@ -4,37 +4,36 @@ import morgan from "morgan";
 import path from "path";
 import cors from "cors";
 import "dotenv/config";
-
 import errorMiddleware from "./src/middlewares/errorMiddleware.js";
-import { authRouter } from "./src/routes/authRoutes.js";
+import authRouter from "./src/routes/authRoutes.js";
+import categoryRouter from "./src/routes/categoryRoutes.js";
 import productRouter from "./src/routes/productRoutes.js";
-import categoryRouter from "./src/routes/categoryRoute.js";
-
-// import cloudnaryConfig from "./src/config/cloudnaryConfig.js/index.js";
-
 import orderRouter from "./src/routes/orderRoutes.js";
-
+import imageRouter from "./src/routes/imageRoutes.js";
+import categoryRouter from "./src/routes/categoryRoute.js";
+import orderRouter from "./src/routes/orderRoutes.js";
 import imageRouter from "./src/routes/imageRoute.js";
 import reviewRouter from "./src/routes/reviewRoutes.js";
 import couponRouter from "./src/routes/couponRoutes.js";
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
 //middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.ROOT_URL,
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  })
+);
+
 app.use(express.json());
 app.use(morgan("dev"));
 
-// cloudnary cinfiguration
-// cloudnaryConfig();
-
 // get the current directory name
 const __dirname = path.resolve();
-
-// middlewares
-app.use(cors());
-app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
@@ -51,8 +50,7 @@ app.use("/api/v1/coupon", couponRouter);
 // connect MongoDB
 connection()
   .then(() => {
-    /** ready to use. The `mongoose.connect()` promise resolves to mongoose
-    instance. */
+   
     app.listen(PORT, "0.0.0.0", (error) => {
       return !error
         ? console.log(`server is running at http://localhost:${PORT}`)
@@ -62,14 +60,6 @@ connection()
   .catch((error) => console.log(error));
 
 
-// get the current directory name
-// const __dirname = path.resolve();
-
-// // middlewares
-// // app.use(cors());
-// // app.use(express.json());
-
-// app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
 

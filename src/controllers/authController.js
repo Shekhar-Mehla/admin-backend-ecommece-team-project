@@ -66,12 +66,12 @@ export const registerNewUser = async (req, res, next) => {
 export const updateUserDetails = async (req, res) => {
   try {
     const { userId } = req.params;
-    const userData = req.body;
 
     //check if there is password in req.body
     if (req.body.password) {
       req.body.password = hashPassword(req.body.password);
     }
+    const userData = req.body;
 
     // Check if userId is provided
     if (!userId) {

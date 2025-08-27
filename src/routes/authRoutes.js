@@ -19,7 +19,7 @@ import {
 
 import { authMiddleware, refreshAuth } from "../middlewares/authMiddleware.js";
 
-export const authRouter = express.Router();
+const authRouter = express.Router();
 
 // register new user route
 
@@ -61,3 +61,5 @@ authRouter.patch("/change-password", changePassword);
 
 //logout
 authRouter.post("/logout", authMiddleware, logout);
+
+export default authRouter;
