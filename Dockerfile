@@ -1,20 +1,20 @@
-# Use official Node.js image
-FROM node:22
+# 1️⃣ Use Node.js 22 base image (lightweight Alpine)
+FROM node:22-alpine
 
-# Set working directory
+# 2️⃣ Set working directory inside container
 WORKDIR /app
 
-# Copy package.json and yarn.lock
+# 3️⃣ Copy package.json and yarn.lock for dependency installation
 COPY package.json yarn.lock ./
 
-# Install dependencies (limit concurrency to avoid 429)
-RUN yarn install --production --network-concurrency 1
+# 4️⃣ Install dependencies using Yarn
+RUN yarn install --production
 
-# Copy rest of the app
+# 5️⃣ Copy all other backend code into container
 COPY . .
 
-# Expose port (make sure it matches your app)
-EXPOSE 8001
+# 6️⃣ Expose the port your backend runs on
+EXPOSE 8000
 
-# Start the app
+# 7️⃣ Start the backend using the start script from package.json
 CMD ["yarn", "start"]

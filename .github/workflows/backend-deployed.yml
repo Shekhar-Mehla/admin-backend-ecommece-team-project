@@ -1,70 +1,65 @@
-name: CI/CD for Ecommerce Backend
+name: Deploy Node.js Backend to EC2
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main  # Trigger deployment on push to main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
-      - name: Checkout code
+      # 1️⃣ Checkout repo
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Log in to GitHub Container Registry
-      - name: Log in to GHCR
-        uses: docker/login-action@v2
+      # 2️⃣ Copy backend code to EC2
+      - name: Copy Files to EC2
+        uses: appleboy/scp-action@v0.1.5
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: "."
+          target: "/home/ubuntu/backend"
 
-      # 3️⃣ Build Docker image
-      - name: Build Docker image
-        run: docker build -t ghcr.io/shekhar-mehla/admin-backend-ecommece-team-project:latest -f Dockerfile .
+      # 3️⃣ SSH into EC2 and deploy Docker
+      - name: SSH and Deploy Docker
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd backend
 
-      # 4️⃣ Push Docker image to GHCR
-      - name: Push Docker image
-        run: docker push ghcr.io/shekhar-mehla/admin-backend-ecommece-team-project:latest
+            # Build Docker image
+            docker build -t sportify-backend .
 
-      # 5️⃣ Deploy to EC2
-      - name: Deploy to EC2
-        run: |
-          # Decode the Base64 SSH key and save it
-          echo "${{ secrets.EC2_SSH_KEY_BASE64 }}" | base64 --decode > /tmp/ec2_key.pem
-          chmod 600 /tmp/ec2_key.pem
+            # Stop old container if exists
+            docker stop sportify-container || true
 
-          # SSH and run commands on EC2
-          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
-            # Stop and remove old container if exists
-            docker stop ecommerce-backend || true
-            docker rm ecommerce-backend || true
+            # Remove old container if exists
+            docker rm sportify-container || true
 
-            # Pull the latest Docker image
-            docker pull ghcr.io/shekhar-mehla/admin-backend-ecommece-team-project:latest
+            # Remove dangling images
+            docker image prune -f
 
-            # Run container with all environment variables directly from GitHub secrets
-            docker run -d -p 8001:8001 \
-              
-              
-               -e MONGO_URI='${{ secrets.MONGO_URI }}' \
-               -e CLOUD_NAME='${{ secrets.CLOUD_NAME }}' \
-               -e API_KEY='${{ secrets.API_KEY }}' \
-               -e API_SECRET='${{ secrets.API_SECRET }}' \
-               -e SMTP_USER='${{ secrets.SMTP_USER }}' \
-               -e SMTP_PASS='${{ secrets.SMTP_PASS }}' \
-               -e SMTP_HOST='${{ secrets.SMTP_HOST }}' \
-               -e SMTP_PORT='${{ secrets.SMTP_PORT }}' \
-               -e ROOT_URL='${{ secrets.ROOT_URL }}' \
-               -e JWT_ACCESS_SECRET='${{ secrets.JWT_ACCESS_SECRET }}' \
-               -e JWT_REFRESH_SECRE='${{ secrets.JWT_REFRESH_SECRE }}' \
-               -e GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}' \
-               -e GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
-              --name ecommerce-backend \
-              ghcr.io/shekhar-mehla/admin-backend-ecommece-team-project:latest
-
-            # Optional: Verify container is running
-            docker ps
-          EOF
+            # Run new container with all environment variables from GitHub Secrets
+            docker run -d -p 8000:8000 \
+              --name sportify-container \
+              -e MONGO_URI=${{ secrets.MONGO_URI }} \
+              -e CLOUD_NAME=${{ secrets.CLOUD_NAME }} \
+              -e API_KEY=${{ secrets.API_KEY }} \
+              -e API_SECRET=${{ secrets.API_SECRET }} \
+              -e SMTP_USER=${{ secrets.SMTP_USER }} \
+              -e SMTP_PASS=${{ secrets.SMTP_PASS }} \
+              -e SMTP_HOST=${{ secrets.SMTP_HOST }} \
+              -e SMTP_PORT=${{ secrets.SMTP_PORT }} \
+              -e ROOT_URL=${{ secrets.ROOT_URL }} \
+              -e JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
+              -e JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
+              -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+              -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+              sportify-backend
