@@ -16,14 +16,14 @@ jobs:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          ssh-private-key: ${{ secrets.EC2_KEY }}
 
       - name: Copy project to EC2
-        run: scp -r ./ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:~/backend
+        run: scp -r ./ ubuntu@${{ secrets.EC2_HOST }}:~/backend
 
       - name: Build and run Docker on EC2
         run: |
-          ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash -c '
+          ssh ubuntu@${{ secrets.EC2_HOST }} "bash -c '
             cd ~/backend
             # Create .env file dynamically
             echo \"MONGO_URI=${{ secrets.MONGO_URI }}\" > .env
