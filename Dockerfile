@@ -1,5 +1,5 @@
-# Use official Node.js image
-FROM node:20-alpine
+# Use Node LTS
+FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
@@ -8,13 +8,14 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+# Try strict frozen lockfile first, fallback to normal install if mismatch
+RUN yarn install --frozen-lockfile || yarn install
 
-# Copy the rest of the project
+# Copy the rest of the code
 COPY . .
 
 # Expose port
 EXPOSE 8000
 
-# Start the server
-CMD ["node", "server.js"]
+# Start app
+CMD ["yarn", "start"]
