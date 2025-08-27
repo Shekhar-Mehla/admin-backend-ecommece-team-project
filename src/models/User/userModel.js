@@ -11,6 +11,11 @@ export const findUserByEmail = async (email) => {
   const user = await userCollection.findOne({ email });
   return user;
 };
+// Find user by email
+export const findUserByGoogleId = async (providerId) => {
+  const user = await userCollection.findOne({ providerId });
+  return user;
+};
 
 //get all the user
 export const findAllUsers = async () => {

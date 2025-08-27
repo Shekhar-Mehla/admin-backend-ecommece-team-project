@@ -1,0 +1,21 @@
+# Node modules should not be copied, they will be installed in container
+node_modules
+
+# Environment variables
+.env
+
+# Git files
+.git
+.gitignore
+
+# Logs and temporary files
+npm-debug.log
+yarn-error.log
+*.log
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Local system files
+.DS_Store
