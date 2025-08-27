@@ -31,7 +31,6 @@ app.use(morgan("dev"));
 
 // get the current directory name
 const __dirname = path.resolve();
-// static files
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));

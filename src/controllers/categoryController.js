@@ -71,58 +71,6 @@ export const getAllCategories = async (req, res, next) => {
   }
 };
 
-// export const updateCategoryController = async (req, res, next) => {
-//   try {
-//     // step 1 get data from req.body
-//     const { _id, name } = req.body;
-
-//     // step 2 fetch csategry by id from db
-//     const category = await getCategoryById(_id);
-
-//     if (category?._id) {
-//       const { parent } = category;
-//       const oldPath = category.path;
-
-//       const newslug = slugify(name, { lower: true });
-//       const { path } = await getCategoryPath({
-//         name: name,
-//         parentId: parent === "" ? null : parent,
-//       });
-//       // update category
-
-//       const updateObj = { name, path, slug: newslug };
-//       const updatedCategory = await updateCategory({ _id }, updateObj);
-//       if (updatedCategory?._id) {
-//         // update the children
-//         const updatedChildrens = await updateChildrenCategories(oldPath, path);
-//         if (updatedChildrens?.modifiedCount > 0) {
-//           const updatedProdtcsWithCategoryPath =
-//             await updateProductsCategoryPath(oldPath, path);
-
-//           if (updatedProdtcsWithCategoryPath?.modifiedCount > 0) {
-//             return responseClient({
-//               message: "updated the category successfully",
-//               res,
-//             });
-//           } else {
-//             responseClient({
-//               message: `categrory has been updated but there is no product under this categry`,
-//               res,
-//             });
-//           }
-//         }
-//       }
-//     }
-//     return responseClient({
-//       res,
-//       message: "something went wrong could not update category",
-//       statusCode: 400,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 // delete category
 export const updateCategoryController = async (req, res, next) => {
   try {
