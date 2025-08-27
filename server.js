@@ -12,11 +12,11 @@ import categoryRouter from "./src/routes/categoryRoute.js";
 
 // import cloudnaryConfig from "./src/config/cloudnaryConfig.js/index.js";
 
-import orderRouter from "./src/Routes/orderRoutes.js";
+import orderRouter from "./src/routes/orderRoutes.js";
 
-import imageRouter from "./src/Routes/imageRoute.js";
-import reviewRouter from "./src/Routes/reviewRoutes.js";
-import couponRouter from "./src/Routes/couponRoutes.js";
+import imageRouter from "./src/routes/imageRoute.js";
+import reviewRouter from "./src/routes/reviewRoutes.js";
+import couponRouter from "./src/routes/couponRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
