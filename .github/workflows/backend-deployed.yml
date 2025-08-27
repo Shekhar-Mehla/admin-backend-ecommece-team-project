@@ -1,65 +1,53 @@
-name: Deploy Node.js Backend to EC2
+name: Deploy Node Backend to EC2
 
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to main branch
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Copy backend code to EC2
-      - name: Copy Files to EC2
-        uses: appleboy/scp-action@v0.1.5
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.2
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
-          source: "."
-          target: "/home/ubuntu/backend"
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      # 3️⃣ SSH into EC2 and deploy Docker
-      - name: SSH and Deploy Docker
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
-          script: |
-            cd backend
+      - name: Copy project to EC2
+        run: scp -r ./ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:~/backend
 
-            # Build Docker image
+      - name: Build and run Docker on EC2
+        run: |
+          ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} bash -c "
+            cd ~/backend
+
+            # Write .env file
+            echo \"MONGO_URI='${{ secrets.MONGO_URI }}'\" > .env
+            echo \"CLOUD_NAME='${{ secrets.CLOUD_NAME }}'\" >> .env
+            echo \"API_KEY='${{ secrets.API_KEY }}'\" >> .env
+            echo \"API_SECRET='${{ secrets.API_SECRET }}'\" >> .env
+            echo \"SMTP_USER='${{ secrets.SMTP_USER }}'\" >> .env
+            echo \"SMTP_PASS='${{ secrets.SMTP_PASS }}'\" >> .env
+            echo \"SMTP_HOST='${{ secrets.SMTP_HOST }}'\" >> .env
+            echo \"SMTP_PORT='${{ secrets.SMTP_PORT }}'\" >> .env
+            echo \"ROOT_URL='${{ secrets.ROOT_URL }}'\" >> .env
+            echo \"JWT_ACCESS_SECRET='${{ secrets.JWT_ACCESS_SECRET }}'\" >> .env
+            echo \"JWT_REFRESH_SECRET='${{ secrets.JWT_REFRESH_SECRET }}'\" >> .env
+            echo \"GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}'\" >> .env
+            echo \"GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}'\" >> .env
+
+            # Build Docker
             docker build -t sportify-backend .
 
-            # Stop old container if exists
-            docker stop sportify-container || true
-
             # Remove old container if exists
+            docker stop sportify-container || true
             docker rm sportify-container || true
 
-            # Remove dangling images
-            docker image prune -f
-
-            # Run new container with all environment variables from GitHub Secrets
-            docker run -d -p 8000:8000 \
-              --name sportify-container \
-              -e MONGO_URI=${{ secrets.MONGO_URI }} \
-              -e CLOUD_NAME=${{ secrets.CLOUD_NAME }} \
-              -e API_KEY=${{ secrets.API_KEY }} \
-              -e API_SECRET=${{ secrets.API_SECRET }} \
-              -e SMTP_USER=${{ secrets.SMTP_USER }} \
-              -e SMTP_PASS=${{ secrets.SMTP_PASS }} \
-              -e SMTP_HOST=${{ secrets.SMTP_HOST }} \
-              -e SMTP_PORT=${{ secrets.SMTP_PORT }} \
-              -e ROOT_URL=${{ secrets.ROOT_URL }} \
-              -e JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
-              -e JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
-              -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
-              -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
-              sportify-backend
+            # Run new container
+            docker run -d -p 8000:8000 --name sportify-container --env-file .env sportify-backend
+          "
