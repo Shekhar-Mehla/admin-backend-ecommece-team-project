@@ -10,6 +10,9 @@ import categoryRouter from "./src/routes/categoryRoutes.js";
 import productRouter from "./src/routes/productRoutes.js";
 import orderRouter from "./src/routes/orderRoutes.js";
 import imageRouter from "./src/routes/imageRoutes.js";
+import categoryRouter from "./src/routes/categoryRoute.js";
+import orderRouter from "./src/routes/orderRoutes.js";
+import imageRouter from "./src/routes/imageRoute.js";
 import reviewRouter from "./src/routes/reviewRoutes.js";
 import couponRouter from "./src/routes/couponRoutes.js";
 
@@ -47,13 +50,21 @@ app.use("/api/v1/coupon", couponRouter);
 // connect MongoDB
 connection()
   .then(() => {
-    app.listen(PORT, (error) => {
+    app.listen(PORT, "0.0.0.0", (error) => {
       return !error
         ? console.log(`server is running at http://localhost:${PORT}`)
         : console.log(error);
     });
   })
   .catch((error) => console.log(error));
+
+app.get("/", (req, res) => res.send("<h2>Api is up</h2>"));
+
+//Routers
+app.use("/api/vi/image", imageRouter); // image upload api for cloudnary
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/product", productRouter);
+app.use("/api/v1/category", categoryRouter);
 
 // global error handler make sure to keep these middleware at the very bottom
 // page not found error

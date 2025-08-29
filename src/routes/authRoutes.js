@@ -9,6 +9,8 @@ import {
   logout,
   registerNewUser,
   updateUserDetails,
+  googleAuthController,
+  googleAuthCallBackController,
 } from "../controllers/authController.js";
 import {
   registerUserValidtion,
@@ -20,6 +22,7 @@ import { authMiddleware, refreshAuth } from "../middlewares/authMiddleware.js";
 const authRouter = express.Router();
 
 // register new user route
+
 authRouter.post(
   "/register",
   registerUserValidtion,
@@ -32,6 +35,11 @@ authRouter.patch("/update/:userId", authMiddleware, updateUserDetails);
 
 //delete a user
 authRouter.delete("/delete/:userId", authMiddleware, deleteUser);
+
+authRouter.post("/register", registerUserValidtion, registerNewUser);
+authRouter.get("/google", googleAuthController);
+authRouter.get("/google/callback", googleAuthCallBackController);
+
 
 //login user
 authRouter.post("/login", loginValidation, loginUser);
