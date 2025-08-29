@@ -14,6 +14,7 @@ export const addProductController = async (req, res, next) => {
   try {
     const slug = slugify(req.body.title, { lower: true });
     const category = await getCategoryById(req.body.categoryId);
+
     if (!category?._id) {
       throw new Error("could not find category");
     }
@@ -21,14 +22,12 @@ export const addProductController = async (req, res, next) => {
 
     const obj = {
       ...req.body,
-      thumbnail: req.body.images[0],
+      mainCategory: category?.path?.split("/")[1] || category?.name,
       slug,
       productPath,
     };
-    console.log(obj);
 
     const product = await addNewProduct(obj);
-    console.log(product);
 
     product?._id
       ? responseClient({ res, message: "Product added succesfully👌" })
@@ -68,7 +67,6 @@ export const getProductsByCategoryIdController = async (req, res, next) => {
 export const getProductByIdController = async (req, res, next) => {
   try {
     const { _id } = req.params;
-    console.log(_id);
 
     if (_id) {
       // call model

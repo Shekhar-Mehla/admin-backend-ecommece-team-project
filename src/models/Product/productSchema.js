@@ -2,20 +2,19 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true }, // Product title
+    title: { type: String, required: true },
     description: String,
-    slug: { type: String, required: true, index: true }, // Description text
-    price: { type: Number, required: true }, // Normal price
-    discountPrice: Number, // Discounted price if any
-    images: [String], // Array of image URLs
-    thumbnail: String, // Main thumbnail image
+    slug: { type: String, required: true, index: true },
+    price: { type: Number, required: true },
+    discountPrice: Number,
+    thumbnail: String,
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
     },
     productPath: { type: String, required: true, index: true },
-    mainCategory: { type: String, required: true, index: true },
+    mainCategory: { type: String, required: true },
     stock: Number,
     sizes: [String],
     colors: [String],
@@ -27,7 +26,7 @@ const productSchema = new mongoose.Schema(
     },
     tags: [String],
 
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }], // References to reviews
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     videoUrl: { type: String },
   },
   { timestamps: true }
@@ -35,4 +34,3 @@ const productSchema = new mongoose.Schema(
 
 const productCollection = mongoose.model("Product", productSchema);
 export default productCollection;
-// 

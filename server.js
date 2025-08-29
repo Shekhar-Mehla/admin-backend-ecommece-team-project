@@ -47,7 +47,7 @@ app.use("/api/v1/coupon", couponRouter);
 // connect MongoDB
 connection()
   .then(() => {
-    app.listen(PORT, "0.0.0.0", (error) => {
+    app.listen(PORT, (error) => {
       return !error
         ? console.log(`server is running at http://localhost:${PORT}`)
         : console.log(error);
